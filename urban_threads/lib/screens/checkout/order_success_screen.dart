@@ -20,7 +20,7 @@ class OrderSuccessScreen extends StatelessWidget {
                 width: 150,
                 height: 150,
                 decoration: BoxDecoration(
-                  color: AppColors.secondary.withOpacity(0.18),
+                  color: AppColors.secondary.withValues(alpha: 0.18),
                   shape: BoxShape.circle,
                 ),
                 child: Stack(
@@ -74,7 +74,7 @@ class OrderSuccessScreen extends StatelessWidget {
               SizedBox(
                 width: double.infinity,
                 height: 56,
-                child: ElevatedButton(
+                child: OutlinedButton(
                   onPressed: () {
                     Navigator.pushAndRemoveUntil(
                       context,
@@ -82,17 +82,16 @@ class OrderSuccessScreen extends StatelessWidget {
                       (route) => false,
                     );
                   },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.secondary,
-                    foregroundColor: Colors.white,
-                    elevation: 0,
+                  style: OutlinedButton.styleFrom(
+                    foregroundColor: AppColors.error,
+                    side: const BorderSide(color: AppColors.error, width: 1.4),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(28),
                     ),
                   ),
                   child: Text(
-                    'Order Tracking',
-                    style: GoogleFonts.poppins(fontWeight: FontWeight.w700),
+                    'Cancel',
+                    style: GoogleFonts.poppins(fontWeight: FontWeight.w800),
                   ),
                 ),
               ),
