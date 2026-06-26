@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
+import '../../models/order_model.dart';
 import '../../providers/auth_provider.dart';
+import '../../providers/favorite_provider.dart';
+import '../../providers/order_provider.dart';
 import '../../providers/theme_provider.dart';
 import '../../config/app_colors.dart';
 import '../orders/order_detail_screen.dart';
@@ -12,6 +16,8 @@ class ProfileScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final authProvider = Provider.of<AuthProvider>(context);
+    final favoriteProvider = Provider.of<FavoriteProvider>(context);
+    final orderProvider = Provider.of<OrderProvider>(context);
     final userName = authProvider.userName ?? 'User';
     final userEmail = authProvider.userEmail ?? 'user@email.com';
 
@@ -33,9 +39,12 @@ class ProfileScreen extends StatelessWidget {
           children: [
             _buildProfileHeader(context, userName, userEmail),
             const SizedBox(height: 24),
-            _buildStatsCards(),
+            _buildStatsCards(
+              orderProvider.orders.length,
+              favoriteProvider.itemCount,
+            ),
             const SizedBox(height: 24),
-            _buildOrderHistory(context),
+            _buildOrderHistory(context, orderProvider.orders),
             const SizedBox(height: 24),
             _buildMenuItems(context),
           ],
@@ -77,6 +86,8 @@ class ProfileScreen extends StatelessWidget {
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
                   ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                 ),
                 const SizedBox(height: 4),
                 Text(
@@ -85,6 +96,8 @@ class ProfileScreen extends StatelessWidget {
                     color: AppColors.textSecondary,
                     fontSize: 14,
                   ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                 ),
                 const SizedBox(height: 8),
                 Container(
@@ -94,9 +107,9 @@ class ProfileScreen extends StatelessWidget {
                     color: AppColors.success.withOpacity(0.1),
                     borderRadius: BorderRadius.circular(12),
                   ),
-                  child: Row(
+                  child: const Row(
                     mainAxisSize: MainAxisSize.min,
-                    children: const [
+                    children: [
                       Icon(
                         Icons.verified,
                         color: AppColors.success,
@@ -126,15 +139,23 @@ class ProfileScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildStatsCards() {
+  Widget _buildStatsCards(int orderCount, int wishlistCount) {
     return Row(
       children: [
         Expanded(
-          child: _buildStatCard('Orders', '12', Icons.shopping_bag_outlined),
+          child: _buildStatCard(
+            'Orders',
+            orderCount.toString(),
+            Icons.shopping_bag_outlined,
+          ),
         ),
         const SizedBox(width: 12),
         Expanded(
-          child: _buildStatCard('Wishlist', '8', Icons.favorite_outline),
+          child: _buildStatCard(
+            'Wishlist',
+            wishlistCount.toString(),
+            Icons.favorite_outline,
+          ),
         ),
         const SizedBox(width: 12),
         Expanded(
@@ -174,30 +195,7 @@ class ProfileScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildOrderHistory(BuildContext context) {
-    final orders = [
-      {
-        'id': 'ORD-001',
-        'items': [
-          'Bix Bag Limited Edition',
-          'Box Headphone 132',
-          'Box Headphone 345'
-        ],
-        'date': 'Dec 15, 2024',
-        'status': 'Delivered',
-        'total': 99.00,
-        'color': AppColors.success,
-      },
-      {
-        'id': 'ORD-002',
-        'items': ['Urban Hoodie Premium', 'Classic T-Shirt'],
-        'date': 'Dec 10, 2024',
-        'status': 'Processing',
-        'total': 64.99,
-        'color': AppColors.secondary,
-      },
-    ];
-
+  Widget _buildOrderHistory(BuildContext context, List<Order> orders) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -218,92 +216,139 @@ class ProfileScreen extends StatelessWidget {
           ],
         ),
         const SizedBox(height: 12),
-        ListView.separated(
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          itemCount: orders.length,
-          separatorBuilder: (_, __) => const SizedBox(height: 12),
-          itemBuilder: (context, index) {
-            final order = orders[index];
-            return GestureDetector(
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => OrderDetailScreen(order: order),
+        if (orders.isEmpty)
+          _buildEmptyOrders()
+        else
+          ListView.separated(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            itemCount: orders.length,
+            separatorBuilder: (_, __) => const SizedBox(height: 12),
+            itemBuilder: (context, index) {
+              return _buildOrderCard(context, orders[index]);
+            },
+          ),
+      ],
+    );
+  }
+
+  Widget _buildEmptyOrders() {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(18),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Column(
+        children: [
+          Icon(
+            Icons.receipt_long_outlined,
+            color: AppColors.textLight,
+            size: 34,
+          ),
+          const SizedBox(height: 8),
+          Text(
+            'No orders yet',
+            style: GoogleFonts.poppins(
+              fontWeight: FontWeight.w700,
+              color: AppColors.textPrimary,
+            ),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            'Completed checkouts will appear here.',
+            textAlign: TextAlign.center,
+            style: GoogleFonts.poppins(
+              fontSize: 12,
+              color: AppColors.textSecondary,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildOrderCard(BuildContext context, Order order) {
+    final statusColor = _statusColor(order.status);
+    final date = DateFormat('MMM d, yyyy').format(order.createdAt);
+
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) => OrderDetailScreen(order: order),
+          ),
+        );
+      },
+      child: Container(
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: Row(
+          children: [
+            Container(
+              width: 50,
+              height: 50,
+              decoration: BoxDecoration(
+                color: AppColors.secondary.withOpacity(0.1),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: const Icon(
+                Icons.receipt_long_outlined,
+                color: AppColors.secondary,
+              ),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Order #${order.id}',
+                    style: const TextStyle(
+                      fontWeight: FontWeight.w600,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                   ),
-                );
-              },
-              child: Container(
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Row(
-                  children: [
-                    Container(
-                      width: 50,
-                      height: 50,
-                      decoration: BoxDecoration(
-                        color: AppColors.secondary.withOpacity(0.1),
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: const Icon(
-                        Icons.receipt_long_outlined,
-                        color: AppColors.secondary,
-                      ),
+                  Text(
+                    '${order.itemCount} items - $date',
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: AppColors.textSecondary,
                     ),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'Order #${order['id']}',
-                            style: const TextStyle(
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                          Text(
-                            '${(order['items'] as List<String>?)?.length ?? 0} items · ${order['date'] as String}',
-                            style: TextStyle(
-                              fontSize: 12,
-                              color: AppColors.textSecondary,
-                            ),
-                          ),
-                          Text(
-                            '\$${order['total']}',
-                            style: const TextStyle(
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                        ],
-                      ),
+                  ),
+                  Text(
+                    '\$${order.total.toStringAsFixed(2)}',
+                    style: const TextStyle(
+                      fontWeight: FontWeight.w600,
                     ),
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 10, vertical: 4),
-                      decoration: BoxDecoration(
-                        color: (order['color'] as Color).withOpacity(0.1),
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: Text(
-                        order['status'] as String,
-                        style: TextStyle(
-                          fontSize: 11,
-                          fontWeight: FontWeight.w600,
-                          color: order['color'] as Color,
-                        ),
-                      ),
-                    ),
-                  ],
+                  ),
+                ],
+              ),
+            ),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+              decoration: BoxDecoration(
+                color: statusColor.withOpacity(0.1),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Text(
+                order.status,
+                style: TextStyle(
+                  fontSize: 11,
+                  fontWeight: FontWeight.w600,
+                  color: statusColor,
                 ),
               ),
-            );
-          },
+            ),
+          ],
         ),
-      ],
+      ),
     );
   }
 
@@ -354,13 +399,22 @@ class ProfileScreen extends StatelessWidget {
                     ? () {
                         _showLogoutDialog(context);
                       }
-                    : () {
-                        // Handle other menu items
-                      },
+                    : () {},
           );
         }).toList(),
       ),
     );
+  }
+
+  Color _statusColor(String status) {
+    switch (status.toLowerCase()) {
+      case 'delivered':
+        return AppColors.success;
+      case 'cancelled':
+        return AppColors.error;
+      default:
+        return AppColors.secondary;
+    }
   }
 
   void _showLogoutDialog(BuildContext context) {

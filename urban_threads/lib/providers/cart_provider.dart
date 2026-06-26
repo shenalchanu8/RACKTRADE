@@ -44,8 +44,32 @@ class CartProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  void removeCartItem(CartItem cartItem) {
+    _items.removeWhere((item) => _isSameCartItem(item, cartItem));
+    notifyListeners();
+  }
+
+  void removeItems(List<CartItem> cartItems) {
+    _items.removeWhere(
+      (item) => cartItems.any((cartItem) => _isSameCartItem(item, cartItem)),
+    );
+    notifyListeners();
+  }
+
   void updateQuantity(String productId, int newQuantity) {
     final index = _items.indexWhere((item) => item.product.id == productId);
+    if (index >= 0) {
+      if (newQuantity <= 0) {
+        _items.removeAt(index);
+      } else {
+        _items[index].quantity = newQuantity;
+      }
+      notifyListeners();
+    }
+  }
+
+  void updateCartItemQuantity(CartItem cartItem, int newQuantity) {
+    final index = _items.indexWhere((item) => _isSameCartItem(item, cartItem));
     if (index >= 0) {
       if (newQuantity <= 0) {
         _items.removeAt(index);
@@ -59,5 +83,11 @@ class CartProvider extends ChangeNotifier {
   void clearCart() {
     _items.clear();
     notifyListeners();
+  }
+
+  bool _isSameCartItem(CartItem first, CartItem second) {
+    return first.product.id == second.product.id &&
+        first.selectedColor == second.selectedColor &&
+        first.selectedSize == second.selectedSize;
   }
 }

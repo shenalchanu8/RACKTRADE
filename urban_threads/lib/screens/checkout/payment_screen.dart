@@ -2,12 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import '../../config/app_colors.dart';
+import '../../models/cart_item_model.dart';
 import '../../providers/cart_provider.dart';
+import '../../providers/order_provider.dart';
 import '../../widgets/product_image.dart';
 import 'order_success_screen.dart';
 
 class PaymentScreen extends StatefulWidget {
-  const PaymentScreen({super.key});
+  final List<CartItem> checkoutItems;
+
+  const PaymentScreen({
+    super.key,
+    required this.checkoutItems,
+  });
 
   @override
   State<PaymentScreen> createState() => _PaymentScreenState();
@@ -18,8 +25,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final cartProvider = context.watch<CartProvider>();
-    final items = cartProvider.items;
+    final items = widget.checkoutItems;
 
     return Scaffold(
       backgroundColor: const Color(0xFFF1F2F6),
@@ -280,7 +286,14 @@ class _PaymentScreenState extends State<PaymentScreen> {
               width: double.infinity,
               height: 56,
               child: ElevatedButton(
-                onPressed: () {
+                onPressed: () async {
+                  final orderProvider =
+                      context.read<OrderProvider>();
+                  final cartProvider = context.read<CartProvider>();
+                  await orderProvider.addOrder(items: widget.checkoutItems);
+                  cartProvider.removeItems(widget.checkoutItems);
+
+                  if (!context.mounted) return;
                   Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(

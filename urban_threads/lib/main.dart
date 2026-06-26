@@ -5,6 +5,7 @@ import 'providers/favorite_provider.dart';
 import 'providers/product_provider.dart';
 import 'providers/theme_provider.dart';
 import 'providers/auth_provider.dart';
+import 'providers/order_provider.dart';
 import 'screens/splash/onboarding_screen.dart';
 import 'screens/auth/login_screen.dart';
 import 'screens/Auth/register_screen.dart';
@@ -24,6 +25,7 @@ class UrbanThreadsApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => AuthProvider()),
         ChangeNotifierProvider(create: (_) => ThemeProvider()),
         ChangeNotifierProvider(create: (_) => CartProvider()),
+        ChangeNotifierProvider(create: (_) => OrderProvider()),
         ChangeNotifierProvider(create: (_) => FavoriteProvider()),
         ChangeNotifierProvider(
             create: (_) => ProductProvider()..loadProducts()),

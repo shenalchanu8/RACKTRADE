@@ -4,6 +4,7 @@ import 'package:carousel_slider/carousel_slider.dart' as carousel_slider;
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../models/product_model.dart';
+import '../../providers/auth_provider.dart';
 import '../../providers/favorite_provider.dart';
 import '../../providers/product_provider.dart';
 import '../../config/app_colors.dart';
@@ -90,6 +91,10 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   AppBar _buildAppBar() {
+    final userName = context.watch<AuthProvider>().userName?.trim();
+    final displayName =
+        userName == null || userName.isEmpty ? 'Customer' : userName;
+
     return AppBar(
       backgroundColor: Colors.white,
       elevation: 0,
@@ -104,12 +109,14 @@ class _HomeScreenState extends State<HomeScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Hi, Jonathan',
+            'Hi, $displayName',
             style: GoogleFonts.poppins(
               fontWeight: FontWeight.bold,
               color: AppColors.textPrimary,
               fontSize: 16,
             ),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
           ),
           Text(
             "Let's go shopping",

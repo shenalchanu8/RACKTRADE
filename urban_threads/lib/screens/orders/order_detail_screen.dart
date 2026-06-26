@@ -1,16 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
 import '../../config/app_colors.dart';
+import '../../models/cart_item_model.dart';
+import '../../models/order_model.dart';
+import '../../widgets/product_image.dart';
 
 class OrderDetailScreen extends StatelessWidget {
-  final Map<String, dynamic> order;
+  final Order order;
 
   const OrderDetailScreen({super.key, required this.order});
 
   @override
   Widget build(BuildContext context) {
-    final items = (order['items'] as List?)?.cast<String>() ?? const <String>[];
-    final statusColor = order['color'] as Color? ?? AppColors.secondary;
+    final statusColor = _statusColor(order.status);
+    final date = DateFormat('MMM d, yyyy').format(order.createdAt);
 
     return Scaffold(
       backgroundColor: AppColors.background,
@@ -35,7 +39,7 @@ class OrderDetailScreen extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      'Order #${order['id']}',
+                      'Order #${order.id}',
                       style: GoogleFonts.poppins(
                         fontWeight: FontWeight.w800,
                         color: AppColors.textPrimary,
@@ -51,7 +55,7 @@ class OrderDetailScreen extends StatelessWidget {
                         borderRadius: BorderRadius.circular(999),
                       ),
                       child: Text(
-                        order['status'] as String? ?? 'Processing',
+                        order.status,
                         style: GoogleFonts.poppins(
                           color: statusColor,
                           fontSize: 12,
@@ -71,7 +75,7 @@ class OrderDetailScreen extends StatelessWidget {
                     ),
                     const SizedBox(width: 8),
                     Text(
-                      order['date'] as String? ?? '',
+                      date,
                       style: GoogleFonts.poppins(
                         fontSize: 13,
                         color: AppColors.textSecondary,
@@ -91,7 +95,7 @@ class OrderDetailScreen extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      '\$${(order['total'] as num? ?? 0).toStringAsFixed(2)}',
+                      '\$${order.total.toStringAsFixed(2)}',
                       style: GoogleFonts.poppins(
                         color: AppColors.secondary,
                         fontWeight: FontWeight.w800,
@@ -105,7 +109,7 @@ class OrderDetailScreen extends StatelessWidget {
           ),
           const SizedBox(height: 22),
           Text(
-            'Products (${items.length})',
+            'Products (${order.itemCount})',
             style: GoogleFonts.poppins(
               fontSize: 18,
               fontWeight: FontWeight.w800,
@@ -113,13 +117,13 @@ class OrderDetailScreen extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 12),
-          ...items.map(_buildOrderProduct),
+          ...order.items.map(_buildOrderProduct),
         ],
       ),
     );
   }
 
-  Widget _buildOrderProduct(String item) {
+  Widget _buildOrderProduct(CartItem item) {
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.all(14),
@@ -129,16 +133,12 @@ class OrderDetailScreen extends StatelessWidget {
       ),
       child: Row(
         children: [
-          Container(
+          SizedBox(
             width: 56,
             height: 56,
-            decoration: BoxDecoration(
-              color: AppColors.secondary.withOpacity(0.08),
+            child: ProductImage(
+              imageUrl: item.product.imageUrl,
               borderRadius: BorderRadius.circular(12),
-            ),
-            child: const Icon(
-              Icons.shopping_bag_outlined,
-              color: AppColors.secondary,
             ),
           ),
           const SizedBox(width: 12),
@@ -147,7 +147,7 @@ class OrderDetailScreen extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  item,
+                  item.product.name,
                   style: GoogleFonts.poppins(
                     fontWeight: FontWeight.w800,
                     color: AppColors.textPrimary,
@@ -156,7 +156,7 @@ class OrderDetailScreen extends StatelessWidget {
                   overflow: TextOverflow.ellipsis,
                 ),
                 Text(
-                  'Color: Brown',
+                  'Color: ${item.selectedColor.isEmpty ? 'Default' : item.selectedColor}  Qty: ${item.quantity}',
                   style: GoogleFonts.poppins(
                     fontSize: 12,
                     color: AppColors.textLight,
@@ -166,7 +166,7 @@ class OrderDetailScreen extends StatelessWidget {
             ),
           ),
           Text(
-            '\$24.00',
+            '\$${item.subtotal.toStringAsFixed(2)}',
             style: GoogleFonts.poppins(
               fontWeight: FontWeight.w800,
               color: AppColors.textPrimary,
@@ -175,5 +175,16 @@ class OrderDetailScreen extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  Color _statusColor(String status) {
+    switch (status.toLowerCase()) {
+      case 'delivered':
+        return AppColors.success;
+      case 'cancelled':
+        return AppColors.error;
+      default:
+        return AppColors.secondary;
+    }
   }
 }

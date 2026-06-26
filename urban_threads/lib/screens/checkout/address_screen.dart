@@ -1,10 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../config/app_colors.dart';
+import '../../models/cart_item_model.dart';
 import 'payment_screen.dart';
 
 class AddressScreen extends StatefulWidget {
-  const AddressScreen({super.key});
+  final List<CartItem> checkoutItems;
+
+  const AddressScreen({
+    super.key,
+    required this.checkoutItems,
+  });
 
   @override
   State<AddressScreen> createState() => _AddressScreenState();
@@ -131,7 +137,11 @@ class _AddressScreenState extends State<AddressScreen> {
                   onPressed: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (_) => const PaymentScreen()),
+                      MaterialPageRoute(
+                        builder: (_) => PaymentScreen(
+                          checkoutItems: widget.checkoutItems,
+                        ),
+                      ),
                     );
                   },
                   style: ElevatedButton.styleFrom(

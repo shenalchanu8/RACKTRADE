@@ -87,10 +87,10 @@ class _CartScreenState extends State<CartScreen> {
                         });
                       },
                       onQuantityChanged: (quantity) {
-                        cartProvider.updateQuantity(item.product.id, quantity);
+                        cartProvider.updateCartItemQuantity(item, quantity);
                       },
                       onRemove: () {
-                        cartProvider.removeItem(item.product.id);
+                        cartProvider.removeCartItem(item);
                         setState(() => _selectedIds.remove(key));
                       },
                     );
@@ -103,6 +103,7 @@ class _CartScreenState extends State<CartScreen> {
                 shipping: shipping,
                 total: total,
                 hasSelection: selectedItems.isNotEmpty,
+                checkoutItems: selectedItems,
               ),
             ],
           );
@@ -246,6 +247,7 @@ class _CartScreenState extends State<CartScreen> {
     required double shipping,
     required double total,
     required bool hasSelection,
+    required List<CartItem> checkoutItems,
   }) {
     return Container(
       padding: const EdgeInsets.fromLTRB(24, 18, 24, 24),
@@ -320,7 +322,9 @@ class _CartScreenState extends State<CartScreen> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (_) => const AddressScreen(),
+                            builder: (_) => AddressScreen(
+                              checkoutItems: checkoutItems,
+                            ),
                           ),
                         );
                       }
