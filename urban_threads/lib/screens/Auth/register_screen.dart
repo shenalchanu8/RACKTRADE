@@ -5,6 +5,7 @@ import '../../providers/auth_provider.dart';
 import '../../widgets/custom_text_field.dart';
 import '../../widgets/custom_button.dart';
 import '../../config/app_colors.dart';
+import '../../config/theme_extensions.dart';
 import '../main/main_screen.dart';
 import 'login_screen.dart';
 
@@ -28,7 +29,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: context.appBackground,
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(24),
@@ -39,7 +40,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
               // Back Button
               IconButton(
                 onPressed: () => Navigator.pop(context),
-                icon: const Icon(Icons.arrow_back),
+                icon: Icon(Icons.arrow_back, color: context.appTextPrimary),
                 padding: EdgeInsets.zero,
                 alignment: Alignment.centerLeft,
               ),
@@ -50,6 +51,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 style: GoogleFonts.poppins(
                   fontSize: 28,
                   fontWeight: FontWeight.bold,
+                  color: context.appTextPrimary,
                 ),
               ),
               const SizedBox(height: 8),
@@ -57,7 +59,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 'Urna amet, suspendisse ullamcorper ac elit diam facilisis cursus vestibulum.',
                 style: GoogleFonts.poppins(
                   fontSize: 14,
-                  color: AppColors.textSecondary,
+                  color: context.appTextSecondary,
                   height: 1.6,
                 ),
               ),
@@ -113,7 +115,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           _obscurePassword
                               ? Icons.visibility_off
                               : Icons.visibility,
-                          color: AppColors.textLight,
+                          color: context.appTextLight,
                         ),
                       ),
                       validator: (value) {
@@ -143,7 +145,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           _obscureConfirmPassword
                               ? Icons.visibility_off
                               : Icons.visibility,
-                          color: AppColors.textLight,
+                          color: context.appTextLight,
                         ),
                       ),
                       validator: (value) {
@@ -175,7 +177,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   Text(
                     'Already Have an Account?',
                     style: GoogleFonts.poppins(
-                      color: AppColors.textSecondary,
+                      color: context.appTextSecondary,
                       fontSize: 14,
                     ),
                   ),
@@ -215,6 +217,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
         _emailController.text,
         _passwordController.text,
       );
+
+      if (!mounted) return;
 
       setState(() {
         _isLoading = false;

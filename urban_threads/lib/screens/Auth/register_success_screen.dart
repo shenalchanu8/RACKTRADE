@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../config/app_colors.dart';
+import '../../config/theme_extensions.dart';
 import '../../widgets/custom_button.dart';
 import '../main/main_screen.dart';
 
@@ -10,7 +11,7 @@ class RegisterSuccessScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: context.appBackground,
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(24),
@@ -20,7 +21,7 @@ class RegisterSuccessScreen extends StatelessWidget {
               Container(
                 width: 120,
                 height: 120,
-                decoration: BoxDecoration(
+                decoration: const BoxDecoration(
                   shape: BoxShape.circle,
                   gradient: AppColors.primaryGradient,
                 ),
@@ -36,6 +37,7 @@ class RegisterSuccessScreen extends StatelessWidget {
                 style: GoogleFonts.poppins(
                   fontSize: 28,
                   fontWeight: FontWeight.bold,
+                  color: context.appTextPrimary,
                 ),
               ),
               const SizedBox(height: 12),
@@ -44,7 +46,7 @@ class RegisterSuccessScreen extends StatelessWidget {
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 16,
-                  color: AppColors.textSecondary,
+                  color: context.appTextSecondary,
                   height: 1.6,
                 ),
               ),

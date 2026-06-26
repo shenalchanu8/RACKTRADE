@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:provider/provider.dart';
 import '../config/app_colors.dart';
+import '../config/theme_extensions.dart';
 import '../models/product_model.dart';
 import '../providers/favorite_provider.dart';
 import 'product_image.dart';
@@ -23,11 +24,12 @@ class ProductCard extends StatelessWidget {
       onTap: onTap,
       child: Container(
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: context.appSurface,
           borderRadius: BorderRadius.circular(16),
+          border: Border.all(color: context.appBorder),
           boxShadow: [
             BoxShadow(
-              color: Colors.grey.withOpacity(0.1),
+              color: Colors.black.withValues(alpha: 0.05),
               spreadRadius: 1,
               blurRadius: 6,
               offset: const Offset(0, 3),
@@ -78,7 +80,7 @@ class ProductCard extends StatelessWidget {
                         final isFavorite =
                             favoriteProvider.isFavorite(product.id);
                         return Material(
-                          color: Colors.white,
+                          color: context.appSurface.withValues(alpha: 0.9),
                           shape: const CircleBorder(),
                           child: InkWell(
                             customBorder: const CircleBorder(),
@@ -115,6 +117,7 @@ class ProductCard extends StatelessWidget {
                     style: GoogleFonts.poppins(
                       fontSize: 14,
                       fontWeight: FontWeight.w600,
+                      color: context.appTextPrimary,
                     ),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
@@ -124,7 +127,7 @@ class ProductCard extends StatelessWidget {
                     'Lisa Robber', // Brand name
                     style: GoogleFonts.poppins(
                       fontSize: 11,
-                      color: AppColors.textSecondary,
+                      color: context.appTextSecondary,
                     ),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
@@ -147,7 +150,7 @@ class ProductCard extends StatelessWidget {
                         '(${product.reviews})',
                         style: GoogleFonts.poppins(
                           fontSize: 10,
-                          color: AppColors.textLight,
+                          color: context.appTextLight,
                         ),
                       ),
                     ],
@@ -167,7 +170,7 @@ class ProductCard extends StatelessWidget {
                       Container(
                         padding: const EdgeInsets.all(4),
                         decoration: BoxDecoration(
-                          color: AppColors.secondary.withOpacity(0.1),
+                          color: AppColors.secondary.withValues(alpha: 0.1),
                           borderRadius: BorderRadius.circular(8),
                         ),
                         child: const Icon(

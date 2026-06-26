@@ -4,6 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import '../../config/app_colors.dart';
+import '../../config/theme_extensions.dart';
 import '../../models/product_model.dart';
 import '../../providers/auth_provider.dart';
 import '../../providers/favorite_provider.dart';
@@ -35,7 +36,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: context.appBackground,
       body: SafeArea(
         child: Consumer<ProductProvider>(
           builder: (context, productProvider, child) {
@@ -113,7 +114,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   style: GoogleFonts.poppins(
                     fontSize: 19,
                     fontWeight: FontWeight.w800,
-                    color: AppColors.textPrimary,
+                    color: context.appTextPrimary,
                   ),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
@@ -122,7 +123,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   'Find your next favorite style',
                   style: GoogleFonts.poppins(
                     fontSize: 12,
-                    color: AppColors.textSecondary,
+                    color: context.appTextSecondary,
                     fontWeight: FontWeight.w500,
                   ),
                   maxLines: 1,
@@ -153,15 +154,15 @@ class _HomeScreenState extends State<HomeScreen> {
                 height: 54,
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: context.appSurface,
                   borderRadius: BorderRadius.circular(18),
-                  border: Border.all(color: const Color(0xFFE9EBF0)),
+                  border: Border.all(color: context.appBorder),
                 ),
                 child: Row(
                   children: [
-                    const Icon(
+                    Icon(
                       Icons.search_rounded,
-                      color: AppColors.textSecondary,
+                      color: context.appTextSecondary,
                       size: 22,
                     ),
                     const SizedBox(width: 10),
@@ -170,7 +171,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         'Search products, brands, categories',
                         style: GoogleFonts.poppins(
                           fontSize: 12,
-                          color: AppColors.textLight,
+                          color: context.appTextLight,
                           fontWeight: FontWeight.w500,
                         ),
                         maxLines: 1,
@@ -238,7 +239,7 @@ class _HomeScreenState extends State<HomeScreen> {
       child: Container(
         margin: const EdgeInsets.symmetric(horizontal: 4, vertical: 6),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: context.appSurface,
           borderRadius: BorderRadius.circular(22),
           boxShadow: [
             BoxShadow(
@@ -386,9 +387,9 @@ class _HomeScreenState extends State<HomeScreen> {
       height: 76,
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: context.appSurface,
         borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: const Color(0xFFEDEFF4)),
+        border: Border.all(color: context.appBorder),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -402,7 +403,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 style: GoogleFonts.poppins(
                   fontSize: 15,
                   fontWeight: FontWeight.w800,
-                  color: AppColors.textPrimary,
+                  color: context.appTextPrimary,
                 ),
               ),
               const SizedBox(width: 4),
@@ -411,7 +412,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   label,
                   style: GoogleFonts.poppins(
                     fontSize: 10,
-                    color: AppColors.textSecondary,
+                    color: context.appTextSecondary,
                     fontWeight: FontWeight.w500,
                   ),
                   maxLines: 1,
@@ -479,10 +480,10 @@ class _HomeScreenState extends State<HomeScreen> {
         margin: const EdgeInsets.only(right: 12),
         padding: const EdgeInsets.all(10),
         decoration: BoxDecoration(
-          color: isSelected ? AppColors.secondary : Colors.white,
+          color: isSelected ? AppColors.secondary : context.appSurface,
           borderRadius: BorderRadius.circular(18),
           border: Border.all(
-            color: isSelected ? AppColors.secondary : const Color(0xFFEDEFF4),
+            color: isSelected ? AppColors.secondary : context.appBorder,
           ),
         ),
         child: Column(
@@ -514,7 +515,7 @@ class _HomeScreenState extends State<HomeScreen> {
               style: GoogleFonts.poppins(
                 fontSize: 11,
                 fontWeight: FontWeight.w800,
-                color: isSelected ? Colors.white : AppColors.textPrimary,
+                color: isSelected ? Colors.white : context.appTextPrimary,
               ),
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
@@ -525,7 +526,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 fontSize: 9,
                 color: isSelected
                     ? Colors.white.withValues(alpha: 0.78)
-                    : AppColors.textLight,
+                    : context.appTextLight,
               ),
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
@@ -571,9 +572,9 @@ class _HomeScreenState extends State<HomeScreen> {
         margin: const EdgeInsets.only(right: 14),
         padding: const EdgeInsets.all(10),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: context.appSurface,
           borderRadius: BorderRadius.circular(18),
-          border: Border.all(color: const Color(0xFFEDEFF4)),
+          border: Border.all(color: context.appBorder),
         ),
         child: Row(
           children: [
@@ -596,7 +597,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     style: GoogleFonts.poppins(
                       fontSize: 13,
                       fontWeight: FontWeight.w800,
-                      color: AppColors.textPrimary,
+                      color: context.appTextPrimary,
                     ),
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
@@ -606,7 +607,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     product.brand ?? product.category,
                     style: GoogleFonts.poppins(
                       fontSize: 11,
-                      color: AppColors.textSecondary,
+                      color: context.appTextSecondary,
                     ),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
@@ -672,9 +673,9 @@ class _HomeScreenState extends State<HomeScreen> {
       onTap: () => _openProduct(product),
       child: Container(
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: context.appSurface,
           borderRadius: BorderRadius.circular(18),
-          border: Border.all(color: const Color(0xFFEDEFF4)),
+          border: Border.all(color: context.appBorder),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -714,7 +715,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     style: GoogleFonts.poppins(
                       fontSize: 12,
                       fontWeight: FontWeight.w800,
-                      color: AppColors.textPrimary,
+                      color: context.appTextPrimary,
                     ),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
@@ -724,7 +725,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     product.brand ?? product.category,
                     style: GoogleFonts.poppins(
                       fontSize: 10,
-                      color: AppColors.textLight,
+                      color: context.appTextLight,
                     ),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
@@ -752,7 +753,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         product.rating.toStringAsFixed(1),
                         style: GoogleFonts.poppins(
                           fontSize: 10,
-                          color: AppColors.textSecondary,
+                          color: context.appTextSecondary,
                           fontWeight: FontWeight.w700,
                         ),
                       ),
@@ -782,7 +783,7 @@ class _HomeScreenState extends State<HomeScreen> {
               style: GoogleFonts.poppins(
                 fontSize: 18,
                 fontWeight: FontWeight.w800,
-                color: AppColors.textPrimary,
+                color: context.appTextPrimary,
               ),
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
@@ -812,7 +813,7 @@ class _HomeScreenState extends State<HomeScreen> {
     double radius = 16,
   }) {
     return Material(
-      color: Colors.white,
+      color: context.appSurface,
       borderRadius: BorderRadius.circular(radius),
       child: InkWell(
         onTap: onTap,
@@ -820,7 +821,7 @@ class _HomeScreenState extends State<HomeScreen> {
         child: SizedBox(
           width: size,
           height: size,
-          child: Icon(icon, color: AppColors.textPrimary, size: 22),
+          child: Icon(icon, color: context.appTextPrimary, size: 22),
         ),
       ),
     );
@@ -868,9 +869,9 @@ class _HomeScreenState extends State<HomeScreen> {
       margin: const EdgeInsets.symmetric(horizontal: 20),
       padding: const EdgeInsets.all(22),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: context.appSurface,
         borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: const Color(0xFFEDEFF4)),
+        border: Border.all(color: context.appBorder),
       ),
       child: Row(
         children: [
@@ -891,7 +892,7 @@ class _HomeScreenState extends State<HomeScreen> {
             child: Text(
               'No products found for this category.',
               style: GoogleFonts.poppins(
-                color: AppColors.textSecondary,
+                color: context.appTextSecondary,
                 fontSize: 13,
                 fontWeight: FontWeight.w600,
               ),
@@ -930,7 +931,7 @@ class _FavoriteButton extends StatelessWidget {
       builder: (context, favoriteProvider, child) {
         final isFavorite = favoriteProvider.isFavorite(product.id);
         return Material(
-          color: Colors.white.withValues(alpha: 0.92),
+          color: context.appSurface.withValues(alpha: 0.92),
           shape: const CircleBorder(),
           child: InkWell(
             customBorder: const CircleBorder(),
@@ -939,7 +940,7 @@ class _FavoriteButton extends StatelessWidget {
               padding: const EdgeInsets.all(7),
               child: Icon(
                 isFavorite ? Icons.favorite : Icons.favorite_border,
-                color: isFavorite ? AppColors.error : AppColors.textSecondary,
+                color: isFavorite ? AppColors.error : context.appTextSecondary,
                 size: 18,
               ),
             ),

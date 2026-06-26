@@ -3,6 +3,7 @@ import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import '../../config/app_colors.dart';
+import '../../config/theme_extensions.dart';
 import '../../models/product_model.dart';
 import '../../providers/cart_provider.dart';
 import '../../providers/favorite_provider.dart';
@@ -41,7 +42,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
         (MediaQuery.sizeOf(context).height * 0.42).clamp(310.0, 430.0);
 
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: context.appBackground,
       body: SafeArea(
         bottom: false,
         child: CustomScrollView(
@@ -132,9 +133,9 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.fromLTRB(22, 24, 22, 28),
-      decoration: const BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(30)),
+      decoration: BoxDecoration(
+        color: context.appSurface,
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(30)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -180,7 +181,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
           Text(
             widget.product.description,
             style: GoogleFonts.poppins(
-              color: AppColors.textSecondary,
+              color: context.appTextSecondary,
               fontSize: 13,
               height: 1.7,
             ),
@@ -215,7 +216,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
     return Container(
       padding: const EdgeInsets.fromLTRB(22, 14, 22, 18),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: context.appSurface,
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.08),
@@ -237,7 +238,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                     'Total Price',
                     style: GoogleFonts.poppins(
                       fontSize: 12,
-                      color: AppColors.textLight,
+                      color: context.appTextLight,
                       fontWeight: FontWeight.w500,
                     ),
                   ),
@@ -246,7 +247,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                     style: GoogleFonts.poppins(
                       fontSize: 22,
                       fontWeight: FontWeight.w800,
-                      color: AppColors.textPrimary,
+                      color: context.appTextPrimary,
                     ),
                   ),
                 ],
@@ -295,7 +296,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                   fontSize: 24,
                   height: 1.15,
                   fontWeight: FontWeight.w800,
-                  color: AppColors.textPrimary,
+                  color: context.appTextPrimary,
                 ),
               ),
               const SizedBox(height: 8),
@@ -303,7 +304,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                 widget.product.brand ?? widget.product.category,
                 style: GoogleFonts.poppins(
                   fontSize: 13,
-                  color: AppColors.textSecondary,
+                  color: context.appTextSecondary,
                   fontWeight: FontWeight.w600,
                 ),
               ),
@@ -334,7 +335,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
             '${widget.product.rating.toStringAsFixed(1)} (${widget.product.reviews} reviews)',
             style: GoogleFonts.poppins(
               fontSize: 12,
-              color: AppColors.textSecondary,
+              color: context.appTextSecondary,
               fontWeight: FontWeight.w500,
             ),
             maxLines: 1,
@@ -364,7 +365,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: const Color(0xFFF7F7FA),
+        color: context.appSurfaceSoft,
         borderRadius: BorderRadius.circular(18),
       ),
       child: Row(
@@ -390,7 +391,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                   'Unit Price',
                   style: GoogleFonts.poppins(
                     fontSize: 12,
-                    color: AppColors.textSecondary,
+                    color: context.appTextSecondary,
                   ),
                 ),
                 Text(
@@ -398,7 +399,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                   style: GoogleFonts.poppins(
                     fontSize: 20,
                     fontWeight: FontWeight.w800,
-                    color: AppColors.textPrimary,
+                    color: context.appTextPrimary,
                   ),
                 ),
               ],
@@ -424,7 +425,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
         return Material(
           color: isFloating
               ? Colors.white.withValues(alpha: 0.92)
-              : const Color(0xFFF7F7FA),
+              : context.appSurfaceSoft,
           shape: const CircleBorder(),
           child: InkWell(
             customBorder: const CircleBorder(),
@@ -433,7 +434,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
               padding: const EdgeInsets.all(11),
               child: Icon(
                 isFavorite ? Icons.favorite : Icons.favorite_border,
-                color: isFavorite ? AppColors.error : AppColors.textSecondary,
+                color: isFavorite ? AppColors.error : context.appTextSecondary,
                 size: 22,
               ),
             ),
@@ -448,14 +449,14 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
     required VoidCallback onTap,
   }) {
     return Material(
-      color: Colors.white.withValues(alpha: 0.92),
+      color: context.appSurface.withValues(alpha: 0.92),
       shape: const CircleBorder(),
       child: InkWell(
         customBorder: const CircleBorder(),
         onTap: onTap,
         child: Padding(
           padding: const EdgeInsets.all(11),
-          child: Icon(icon, color: AppColors.textPrimary, size: 20),
+          child: Icon(icon, color: context.appTextPrimary, size: 20),
         ),
       ),
     );
@@ -496,7 +497,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
         decoration: BoxDecoration(
           color: isSelected
               ? AppColors.secondary.withValues(alpha: 0.10)
-              : const Color(0xFFF7F7FA),
+              : context.appSurfaceSoft,
           borderRadius: BorderRadius.circular(999),
           border: Border.all(
             color: isSelected ? AppColors.secondary : Colors.transparent,
@@ -521,7 +522,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                       Icons.check,
                       size: 14,
                       color:
-                          isLightColor ? AppColors.textPrimary : Colors.white,
+                          isLightColor ? context.appTextPrimary : Colors.white,
                     )
                   : null,
             ),
@@ -531,7 +532,8 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
               style: GoogleFonts.poppins(
                 fontSize: 12,
                 fontWeight: FontWeight.w700,
-                color: isSelected ? AppColors.secondary : AppColors.textPrimary,
+                color:
+                    isSelected ? AppColors.secondary : context.appTextPrimary,
               ),
             ),
           ],
@@ -553,7 +555,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
         constraints: const BoxConstraints(minWidth: 46),
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
         decoration: BoxDecoration(
-          color: isSelected ? AppColors.secondary : const Color(0xFFF7F7FA),
+          color: isSelected ? AppColors.secondary : context.appSurfaceSoft,
           borderRadius: BorderRadius.circular(14),
         ),
         child: Text(
@@ -562,7 +564,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
           style: GoogleFonts.poppins(
             fontSize: 12,
             fontWeight: FontWeight.w800,
-            color: isSelected ? Colors.white : AppColors.textPrimary,
+            color: isSelected ? Colors.white : context.appTextPrimary,
           ),
         ),
       ),
@@ -574,7 +576,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
       height: 40,
       padding: const EdgeInsets.all(3),
       decoration: BoxDecoration(
-        color: const Color(0xFFF6F6F8),
+        color: context.appSurfaceSoft,
         borderRadius: BorderRadius.circular(20),
       ),
       child: Row(
@@ -617,13 +619,13 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
         width: 34,
         height: 34,
         decoration: BoxDecoration(
-          color: filled ? AppColors.secondary : Colors.white,
+          color: filled ? AppColors.secondary : context.appSurface,
           shape: BoxShape.circle,
         ),
         child: Icon(
           icon,
           size: 18,
-          color: filled ? Colors.white : AppColors.textSecondary,
+          color: filled ? Colors.white : context.appTextSecondary,
         ),
       ),
     );
@@ -637,7 +639,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
     return Container(
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        color: const Color(0xFFF7F7FA),
+        color: context.appSurfaceSoft,
         borderRadius: BorderRadius.circular(16),
       ),
       child: Row(
@@ -655,7 +657,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                   style: GoogleFonts.poppins(
                     fontSize: 12,
                     fontWeight: FontWeight.w800,
-                    color: AppColors.textPrimary,
+                    color: context.appTextPrimary,
                   ),
                 ),
                 Text(
@@ -664,7 +666,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                   overflow: TextOverflow.ellipsis,
                   style: GoogleFonts.poppins(
                     fontSize: 11,
-                    color: AppColors.textSecondary,
+                    color: context.appTextSecondary,
                   ),
                 ),
               ],
@@ -681,7 +683,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
       style: GoogleFonts.poppins(
         fontSize: 15,
         fontWeight: FontWeight.w800,
-        color: AppColors.textPrimary,
+        color: context.appTextPrimary,
       ),
     );
   }

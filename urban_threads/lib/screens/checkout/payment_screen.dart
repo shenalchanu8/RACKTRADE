@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import '../../config/app_colors.dart';
+import '../../config/theme_extensions.dart';
 import '../../models/cart_item_model.dart';
 import '../../providers/cart_provider.dart';
 import '../../providers/order_provider.dart';
@@ -28,9 +29,9 @@ class _PaymentScreenState extends State<PaymentScreen> {
     final items = widget.checkoutItems;
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF1F2F6),
+      backgroundColor: context.appBackground,
       appBar: AppBar(
-        backgroundColor: const Color(0xFFF1F2F6),
+        backgroundColor: context.appBackground,
         elevation: 0,
         leading: IconButton(
           onPressed: () => Navigator.pop(context),
@@ -42,7 +43,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
           style: GoogleFonts.poppins(
             fontSize: 15,
             fontWeight: FontWeight.w700,
-            color: AppColors.textPrimary,
+            color: context.appTextPrimary,
           ),
         ),
       ),
@@ -58,7 +59,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                 style: GoogleFonts.poppins(
                   fontSize: 18,
                   fontWeight: FontWeight.w800,
-                  color: AppColors.textPrimary,
+                  color: context.appTextPrimary,
                 ),
               ),
               const SizedBox(height: 12),
@@ -86,7 +87,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
               style: GoogleFonts.poppins(
                 fontSize: 18,
                 fontWeight: FontWeight.w800,
-                color: AppColors.textPrimary,
+                color: context.appTextPrimary,
               ),
             ),
             Text(
@@ -124,7 +125,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                     'House',
                     style: GoogleFonts.poppins(
                       fontWeight: FontWeight.w800,
-                      color: AppColors.textPrimary,
+                      color: context.appTextPrimary,
                     ),
                   ),
                   const SizedBox(height: 6),
@@ -133,7 +134,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                     style: GoogleFonts.poppins(
                       fontSize: 12,
                       height: 1.6,
-                      color: AppColors.textSecondary,
+                      color: context.appTextSecondary,
                     ),
                   ),
                 ],
@@ -170,7 +171,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                   style: GoogleFonts.poppins(
                     fontSize: 13,
                     fontWeight: FontWeight.w800,
-                    color: AppColors.textPrimary,
+                    color: context.appTextPrimary,
                   ),
                 ),
                 const SizedBox(height: 6),
@@ -178,7 +179,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                   'Color: ${item.selectedColor.isEmpty ? 'Default' : item.selectedColor}',
                   style: GoogleFonts.poppins(
                     fontSize: 12,
-                    color: AppColors.textLight,
+                    color: context.appTextLight,
                   ),
                 ),
               ],
@@ -188,7 +189,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
             '\$${item.subtotal.toStringAsFixed(2)}',
             style: GoogleFonts.poppins(
               fontWeight: FontWeight.w800,
-              color: AppColors.textPrimary,
+              color: context.appTextPrimary,
             ),
           ),
         ],
@@ -200,11 +201,11 @@ class _PaymentScreenState extends State<PaymentScreen> {
     return Container(
       padding: const EdgeInsets.fromLTRB(24, 10, 24, 24),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: context.appSurface,
         borderRadius: const BorderRadius.vertical(top: Radius.circular(30)),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.08),
+            color: Colors.black.withValues(alpha: 0.08),
             blurRadius: 24,
             offset: const Offset(0, -10),
           ),
@@ -232,7 +233,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
               style: GoogleFonts.poppins(
                 fontSize: 18,
                 fontWeight: FontWeight.w800,
-                color: AppColors.textPrimary,
+                color: context.appTextPrimary,
               ),
             ),
             const SizedBox(height: 16),
@@ -263,7 +264,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
               child: Container(
                 padding: const EdgeInsets.all(14),
                 decoration: BoxDecoration(
-                  color: const Color(0xFFF9F9FB),
+                  color: context.appSurfaceSoft,
                   borderRadius: BorderRadius.circular(14),
                 ),
                 child: Row(
@@ -274,7 +275,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                       'Add Payment Method',
                       style: GoogleFonts.poppins(
                         fontWeight: FontWeight.w700,
-                        color: AppColors.textPrimary,
+                        color: context.appTextPrimary,
                       ),
                     ),
                   ],
@@ -287,8 +288,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
               height: 56,
               child: ElevatedButton(
                 onPressed: () async {
-                  final orderProvider =
-                      context.read<OrderProvider>();
+                  final orderProvider = context.read<OrderProvider>();
                   final cartProvider = context.read<CartProvider>();
                   await orderProvider.addOrder(items: widget.checkoutItems);
                   cartProvider.removeItems(widget.checkoutItems);
@@ -338,7 +338,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
       child: Container(
         padding: const EdgeInsets.all(14),
         decoration: BoxDecoration(
-          color: const Color(0xFFF9F9FB),
+          color: context.appSurfaceSoft,
           borderRadius: BorderRadius.circular(14),
         ),
         child: Row(
@@ -347,7 +347,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
               width: 44,
               height: 44,
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: context.appSurface,
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Icon(icon, color: color),
@@ -361,14 +361,14 @@ class _PaymentScreenState extends State<PaymentScreen> {
                     title,
                     style: GoogleFonts.poppins(
                       fontWeight: FontWeight.w800,
-                      color: AppColors.textPrimary,
+                      color: context.appTextPrimary,
                     ),
                   ),
                   Text(
                     subtitle,
                     style: GoogleFonts.poppins(
                       fontSize: 11,
-                      color: AppColors.textLight,
+                      color: context.appTextLight,
                     ),
                   ),
                 ],
@@ -379,7 +379,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
               width: 20,
               height: 20,
               decoration: BoxDecoration(
-                color: isSelected ? AppColors.secondary : Colors.white,
+                color: isSelected ? AppColors.secondary : context.appSurface,
                 borderRadius: BorderRadius.circular(6),
                 border: Border.all(
                   color:
@@ -403,9 +403,9 @@ class AddNewCardScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: context.appBackground,
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: context.appBackground,
         elevation: 0,
         leading: IconButton(
           onPressed: () => Navigator.pop(context),
@@ -417,7 +417,7 @@ class AddNewCardScreen extends StatelessWidget {
           style: GoogleFonts.poppins(
             fontSize: 15,
             fontWeight: FontWeight.w700,
-            color: AppColors.textPrimary,
+            color: context.appTextPrimary,
           ),
         ),
       ),
@@ -426,15 +426,17 @@ class AddNewCardScreen extends StatelessWidget {
           padding: const EdgeInsets.fromLTRB(24, 24, 24, 24),
           child: Column(
             children: [
-              _buildField('Card Number', 'Enter Card Number',
+              _buildField(context, 'Card Number', 'Enter Card Number',
                   Icons.credit_card_outlined),
               const SizedBox(height: 18),
-              _buildField('Card Holder Name', 'Enter Holder Name',
+              _buildField(context, 'Card Holder Name', 'Enter Holder Name',
                   Icons.person_outline_rounded),
               const SizedBox(height: 18),
-              _buildField('Expired', 'MM/YY', Icons.calendar_month_outlined),
+              _buildField(
+                  context, 'Expired', 'MM/YY', Icons.calendar_month_outlined),
               const SizedBox(height: 18),
-              _buildField('CVV Code', 'CCV', Icons.lock_outline_rounded),
+              _buildField(
+                  context, 'CVV Code', 'CCV', Icons.lock_outline_rounded),
               const Spacer(),
               SizedBox(
                 width: double.infinity,
@@ -462,7 +464,12 @@ class AddNewCardScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildField(String label, String hint, IconData icon) {
+  Widget _buildField(
+    BuildContext context,
+    String label,
+    String hint,
+    IconData icon,
+  ) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -470,7 +477,7 @@ class AddNewCardScreen extends StatelessWidget {
           label,
           style: GoogleFonts.poppins(
             fontWeight: FontWeight.w800,
-            color: AppColors.textPrimary,
+            color: context.appTextPrimary,
           ),
         ),
         const SizedBox(height: 10),
@@ -479,11 +486,11 @@ class AddNewCardScreen extends StatelessWidget {
             hintText: hint,
             hintStyle: GoogleFonts.poppins(
               fontSize: 13,
-              color: AppColors.textLight,
+              color: context.appTextLight,
             ),
-            prefixIcon: Icon(icon, color: AppColors.textLight),
+            prefixIcon: Icon(icon, color: context.appTextLight),
             filled: true,
-            fillColor: const Color(0xFFFAFAFC),
+            fillColor: context.appSurfaceSoft,
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(14),
               borderSide: BorderSide.none,

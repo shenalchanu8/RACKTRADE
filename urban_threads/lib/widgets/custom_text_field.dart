@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../config/app_colors.dart';
+import '../config/theme_extensions.dart';
 
 class CustomTextField extends StatelessWidget {
   final TextEditingController? controller;
@@ -38,7 +39,7 @@ class CustomTextField extends StatelessWidget {
           style: GoogleFonts.poppins(
             fontSize: 14,
             fontWeight: FontWeight.w600,
-            color: AppColors.textPrimary,
+            color: context.appTextPrimary,
           ),
         ),
         const SizedBox(height: 8),
@@ -51,24 +52,24 @@ class CustomTextField extends StatelessWidget {
           onChanged: onChanged,
           style: GoogleFonts.poppins(
             fontSize: 14,
-            color: AppColors.textPrimary,
+            color: context.appTextPrimary,
           ),
           decoration: InputDecoration(
             hintText: hint,
             hintStyle: GoogleFonts.poppins(
               fontSize: 14,
-              color: AppColors.textLight,
+              color: context.appTextLight,
             ),
             prefixIcon: prefixIcon != null
                 ? Icon(
                     prefixIcon,
-                    color: AppColors.textLight,
+                    color: context.appTextLight,
                     size: 20,
                   )
                 : null,
             suffixIcon: suffixIcon,
             filled: true,
-            fillColor: Colors.grey.shade50,
+            fillColor: context.appSurfaceSoft,
             contentPadding: const EdgeInsets.symmetric(
               horizontal: 16,
               vertical: 16,
@@ -80,7 +81,7 @@ class CustomTextField extends StatelessWidget {
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
               borderSide: BorderSide(
-                color: Colors.grey.shade200,
+                color: context.appBorder,
                 width: 1,
               ),
             ),

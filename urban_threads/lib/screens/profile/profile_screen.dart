@@ -8,6 +8,7 @@ import '../../providers/favorite_provider.dart';
 import '../../providers/order_provider.dart';
 import '../../providers/theme_provider.dart';
 import '../../config/app_colors.dart';
+import '../../config/theme_extensions.dart';
 import '../orders/order_detail_screen.dart';
 
 class ProfileScreen extends StatelessWidget {
@@ -22,7 +23,7 @@ class ProfileScreen extends StatelessWidget {
     final userEmail = authProvider.userEmail ?? 'user@email.com';
 
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: context.appBackground,
       appBar: AppBar(
         title: const Text('My Profile'),
         backgroundColor: Colors.transparent,
@@ -40,6 +41,7 @@ class ProfileScreen extends StatelessWidget {
             _buildProfileHeader(context, userName, userEmail),
             const SizedBox(height: 24),
             _buildStatsCards(
+              context,
               orderProvider.orders.length,
               favoriteProvider.itemCount,
             ),
@@ -57,7 +59,7 @@ class ProfileScreen extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: context.appSurface,
         borderRadius: BorderRadius.circular(16),
       ),
       child: Row(
@@ -65,7 +67,7 @@ class ProfileScreen extends StatelessWidget {
           Container(
             width: 70,
             height: 70,
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               shape: BoxShape.circle,
               gradient: AppColors.primaryGradient,
             ),
@@ -85,6 +87,7 @@ class ProfileScreen extends StatelessWidget {
                   style: GoogleFonts.poppins(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
+                    color: context.appTextPrimary,
                   ),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
@@ -93,7 +96,7 @@ class ProfileScreen extends StatelessWidget {
                 Text(
                   email,
                   style: TextStyle(
-                    color: AppColors.textSecondary,
+                    color: context.appTextSecondary,
                     fontSize: 14,
                   ),
                   maxLines: 1,
@@ -104,7 +107,7 @@ class ProfileScreen extends StatelessWidget {
                   padding:
                       const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
                   decoration: BoxDecoration(
-                    color: AppColors.success.withOpacity(0.1),
+                    color: AppColors.success.withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: const Row(
@@ -132,18 +135,23 @@ class ProfileScreen extends StatelessWidget {
           ),
           IconButton(
             onPressed: () {},
-            icon: const Icon(Icons.edit_outlined),
+            icon: Icon(Icons.edit_outlined, color: context.appTextSecondary),
           ),
         ],
       ),
     );
   }
 
-  Widget _buildStatsCards(int orderCount, int wishlistCount) {
+  Widget _buildStatsCards(
+    BuildContext context,
+    int orderCount,
+    int wishlistCount,
+  ) {
     return Row(
       children: [
         Expanded(
           child: _buildStatCard(
+            context,
             'Orders',
             orderCount.toString(),
             Icons.shopping_bag_outlined,
@@ -152,6 +160,7 @@ class ProfileScreen extends StatelessWidget {
         const SizedBox(width: 12),
         Expanded(
           child: _buildStatCard(
+            context,
             'Wishlist',
             wishlistCount.toString(),
             Icons.favorite_outline,
@@ -159,17 +168,27 @@ class ProfileScreen extends StatelessWidget {
         ),
         const SizedBox(width: 12),
         Expanded(
-          child: _buildStatCard('Reviews', '23', Icons.star_outline),
+          child: _buildStatCard(
+            context,
+            'Reviews',
+            '23',
+            Icons.star_outline,
+          ),
         ),
       ],
     );
   }
 
-  Widget _buildStatCard(String label, String value, IconData icon) {
+  Widget _buildStatCard(
+    BuildContext context,
+    String label,
+    String value,
+    IconData icon,
+  ) {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: context.appSurface,
         borderRadius: BorderRadius.circular(12),
       ),
       child: Column(
@@ -178,16 +197,17 @@ class ProfileScreen extends StatelessWidget {
           const SizedBox(height: 8),
           Text(
             value,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.bold,
+              color: context.appTextPrimary,
             ),
           ),
           Text(
             label,
             style: TextStyle(
               fontSize: 12,
-              color: AppColors.textSecondary,
+              color: context.appTextSecondary,
             ),
           ),
         ],
@@ -207,6 +227,7 @@ class ProfileScreen extends StatelessWidget {
               style: GoogleFonts.poppins(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
+                color: context.appTextPrimary,
               ),
             ),
             TextButton(
@@ -217,7 +238,7 @@ class ProfileScreen extends StatelessWidget {
         ),
         const SizedBox(height: 12),
         if (orders.isEmpty)
-          _buildEmptyOrders()
+          _buildEmptyOrders(context)
         else
           ListView.separated(
             shrinkWrap: true,
@@ -232,19 +253,19 @@ class ProfileScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildEmptyOrders() {
+  Widget _buildEmptyOrders(BuildContext context) {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(18),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: context.appSurface,
         borderRadius: BorderRadius.circular(12),
       ),
       child: Column(
         children: [
           Icon(
             Icons.receipt_long_outlined,
-            color: AppColors.textLight,
+            color: context.appTextLight,
             size: 34,
           ),
           const SizedBox(height: 8),
@@ -252,7 +273,7 @@ class ProfileScreen extends StatelessWidget {
             'No orders yet',
             style: GoogleFonts.poppins(
               fontWeight: FontWeight.w700,
-              color: AppColors.textPrimary,
+              color: context.appTextPrimary,
             ),
           ),
           const SizedBox(height: 4),
@@ -261,7 +282,7 @@ class ProfileScreen extends StatelessWidget {
             textAlign: TextAlign.center,
             style: GoogleFonts.poppins(
               fontSize: 12,
-              color: AppColors.textSecondary,
+              color: context.appTextSecondary,
             ),
           ),
         ],
@@ -285,7 +306,7 @@ class ProfileScreen extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: context.appSurface,
           borderRadius: BorderRadius.circular(12),
         ),
         child: Row(
@@ -294,7 +315,7 @@ class ProfileScreen extends StatelessWidget {
               width: 50,
               height: 50,
               decoration: BoxDecoration(
-                color: AppColors.secondary.withOpacity(0.1),
+                color: AppColors.secondary.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(12),
               ),
               child: const Icon(
@@ -309,8 +330,9 @@ class ProfileScreen extends StatelessWidget {
                 children: [
                   Text(
                     'Order #${order.id}',
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontWeight: FontWeight.w600,
+                      color: context.appTextPrimary,
                     ),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
@@ -319,13 +341,14 @@ class ProfileScreen extends StatelessWidget {
                     '${order.itemCount} items - $date',
                     style: TextStyle(
                       fontSize: 12,
-                      color: AppColors.textSecondary,
+                      color: context.appTextSecondary,
                     ),
                   ),
                   Text(
                     '\$${order.total.toStringAsFixed(2)}',
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontWeight: FontWeight.w600,
+                      color: context.appTextPrimary,
                     ),
                   ),
                 ],
@@ -334,7 +357,7 @@ class ProfileScreen extends StatelessWidget {
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
               decoration: BoxDecoration(
-                color: statusColor.withOpacity(0.1),
+                color: statusColor.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Text(
@@ -364,7 +387,7 @@ class ProfileScreen extends StatelessWidget {
 
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: context.appSurface,
         borderRadius: BorderRadius.circular(16),
       ),
       child: Column(
@@ -375,12 +398,12 @@ class ProfileScreen extends StatelessWidget {
           return ListTile(
             leading: Icon(
               item['icon'] as IconData,
-              color: isLogout ? AppColors.error : null,
+              color: isLogout ? AppColors.error : context.appTextSecondary,
             ),
             title: Text(
               item['title'] as String,
               style: TextStyle(
-                color: isLogout ? AppColors.error : null,
+                color: isLogout ? AppColors.error : context.appTextPrimary,
               ),
             ),
             trailing: isDarkMode
@@ -392,7 +415,7 @@ class ProfileScreen extends StatelessWidget {
                       );
                     },
                   )
-                : const Icon(Icons.chevron_right),
+                : Icon(Icons.chevron_right, color: context.appTextSecondary),
             onTap: isDarkMode
                 ? null
                 : isLogout

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import '../../config/app_colors.dart';
+import '../../config/theme_extensions.dart';
 import '../../models/product_model.dart';
 import '../../providers/favorite_provider.dart';
 import '../../providers/product_provider.dart';
@@ -33,7 +34,7 @@ class _ProductSearchScreenState extends State<ProductSearchScreen> {
     final isSearching = _query.trim().isNotEmpty;
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: context.appBackground,
       body: SafeArea(
         child: Column(
           children: [
@@ -68,12 +69,17 @@ class _ProductSearchScreenState extends State<ProductSearchScreen> {
                 });
               },
               onSubmitted: _saveSearch,
-              style: GoogleFonts.poppins(fontSize: 14),
+              style: GoogleFonts.poppins(
+                fontSize: 14,
+                color: context.appTextPrimary,
+              ),
               decoration: InputDecoration(
                 hintText: 'Search products',
-                prefixIcon: const Icon(Icons.search_rounded),
+                hintStyle: GoogleFonts.poppins(color: context.appTextLight),
+                prefixIcon:
+                    Icon(Icons.search_rounded, color: context.appTextLight),
                 suffixIcon: _query.isEmpty
-                    ? const Icon(Icons.tune_rounded)
+                    ? Icon(Icons.tune_rounded, color: context.appTextLight)
                     : IconButton(
                         onPressed: () {
                           _searchController.clear();
@@ -82,14 +88,17 @@ class _ProductSearchScreenState extends State<ProductSearchScreen> {
                             _selectedFilter = 'All';
                           });
                         },
-                        icon: const Icon(Icons.close_rounded),
+                        icon: Icon(
+                          Icons.close_rounded,
+                          color: context.appTextLight,
+                        ),
                       ),
                 filled: true,
-                fillColor: Colors.white,
+                fillColor: context.appSurface,
                 contentPadding: const EdgeInsets.symmetric(vertical: 12),
                 enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(14),
-                  borderSide: BorderSide(color: Colors.grey.shade200),
+                  borderSide: BorderSide(color: context.appBorder),
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(14),
@@ -120,7 +129,7 @@ class _ProductSearchScreenState extends State<ProductSearchScreen> {
               style: GoogleFonts.poppins(
                 fontSize: 16,
                 fontWeight: FontWeight.w700,
-                color: AppColors.textPrimary,
+                color: context.appTextPrimary,
               ),
             ),
             TextButton(
@@ -149,7 +158,7 @@ class _ProductSearchScreenState extends State<ProductSearchScreen> {
           style: GoogleFonts.poppins(
             fontSize: 16,
             fontWeight: FontWeight.w700,
-            color: AppColors.textPrimary,
+            color: context.appTextPrimary,
           ),
         ),
         const SizedBox(height: 12),
@@ -172,9 +181,9 @@ class _ProductSearchScreenState extends State<ProductSearchScreen> {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: context.appSurface,
           borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: Colors.grey.shade200),
+          border: Border.all(color: context.appBorder),
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,
@@ -183,12 +192,11 @@ class _ProductSearchScreenState extends State<ProductSearchScreen> {
               text,
               style: GoogleFonts.poppins(
                 fontSize: 12,
-                color: AppColors.textSecondary,
+                color: context.appTextSecondary,
               ),
             ),
             const SizedBox(width: 8),
-            const Icon(Icons.close_rounded,
-                size: 14, color: AppColors.textLight),
+            Icon(Icons.close_rounded, size: 14, color: context.appTextLight),
           ],
         ),
       ),
@@ -228,7 +236,7 @@ class _ProductSearchScreenState extends State<ProductSearchScreen> {
                     style: GoogleFonts.poppins(
                       fontSize: 14,
                       fontWeight: FontWeight.w700,
-                      color: AppColors.textPrimary,
+                      color: context.appTextPrimary,
                     ),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
@@ -237,7 +245,7 @@ class _ProductSearchScreenState extends State<ProductSearchScreen> {
                     '${product.reviews} searches today',
                     style: GoogleFonts.poppins(
                       fontSize: 12,
-                      color: AppColors.textLight,
+                      color: context.appTextLight,
                     ),
                   ),
                 ],
@@ -292,7 +300,9 @@ class _ProductSearchScreenState extends State<ProductSearchScreen> {
               ? Center(
                   child: Text(
                     'No products found',
-                    style: GoogleFonts.poppins(color: AppColors.textSecondary),
+                    style: GoogleFonts.poppins(
+                      color: context.appTextSecondary,
+                    ),
                   ),
                 )
               : GridView.builder(
@@ -327,10 +337,12 @@ class _ProductSearchScreenState extends State<ProductSearchScreen> {
           });
         },
         selectedColor: AppColors.secondary,
-        backgroundColor: Colors.white,
-        side: BorderSide(color: Colors.grey.shade200),
+        backgroundColor: context.appSurface,
+        side: BorderSide(
+          color: isSelected ? AppColors.secondary : context.appBorder,
+        ),
         labelStyle: GoogleFonts.poppins(
-          color: isSelected ? Colors.white : AppColors.textSecondary,
+          color: isSelected ? Colors.white : context.appTextSecondary,
           fontSize: 12,
           fontWeight: FontWeight.w600,
         ),
@@ -375,7 +387,7 @@ class _ProductSearchScreenState extends State<ProductSearchScreen> {
             style: GoogleFonts.poppins(
               fontSize: 13,
               fontWeight: FontWeight.w700,
-              color: AppColors.textPrimary,
+              color: context.appTextPrimary,
             ),
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
@@ -384,7 +396,7 @@ class _ProductSearchScreenState extends State<ProductSearchScreen> {
             product.brand ?? product.category,
             style: GoogleFonts.poppins(
               fontSize: 11,
-              color: AppColors.textLight,
+              color: context.appTextLight,
             ),
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
@@ -394,7 +406,7 @@ class _ProductSearchScreenState extends State<ProductSearchScreen> {
             style: GoogleFonts.poppins(
               fontSize: 13,
               fontWeight: FontWeight.w800,
-              color: AppColors.textPrimary,
+              color: context.appTextPrimary,
             ),
           ),
         ],
@@ -463,7 +475,7 @@ class _FavoriteButton extends StatelessWidget {
       builder: (context, favoriteProvider, child) {
         final isFavorite = favoriteProvider.isFavorite(product.id);
         return Material(
-          color: Colors.black.withOpacity(0.22),
+          color: context.appSurface.withValues(alpha: 0.88),
           shape: const CircleBorder(),
           child: InkWell(
             customBorder: const CircleBorder(),
@@ -472,7 +484,7 @@ class _FavoriteButton extends StatelessWidget {
               padding: const EdgeInsets.all(7),
               child: Icon(
                 isFavorite ? Icons.favorite : Icons.favorite_border,
-                color: Colors.white,
+                color: isFavorite ? AppColors.error : context.appTextSecondary,
                 size: 18,
               ),
             ),

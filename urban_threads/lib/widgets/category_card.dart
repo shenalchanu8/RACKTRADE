@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../config/app_colors.dart';
+import '../config/theme_extensions.dart';
 
 class CategoryCard extends StatelessWidget {
   final String category;
@@ -21,16 +22,16 @@ class CategoryCard extends StatelessWidget {
         margin: const EdgeInsets.only(right: 12),
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
         decoration: BoxDecoration(
-          color: isSelected ? AppColors.secondary : Colors.grey.shade50,
+          color: isSelected ? AppColors.secondary : context.appSurface,
           borderRadius: BorderRadius.circular(24),
           border: Border.all(
-            color: isSelected ? AppColors.secondary : Colors.grey.shade200,
+            color: isSelected ? AppColors.secondary : context.appBorder,
           ),
         ),
         child: Text(
           category,
           style: TextStyle(
-            color: isSelected ? Colors.white : AppColors.textSecondary,
+            color: isSelected ? Colors.white : context.appTextSecondary,
             fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
           ),
         ),

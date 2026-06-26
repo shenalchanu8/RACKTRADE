@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../models/cart_item_model.dart';
 import '../config/app_colors.dart';
+import '../config/theme_extensions.dart';
 import 'product_image.dart';
 
 class CartItemWidget extends StatelessWidget {
@@ -22,11 +23,12 @@ class CartItemWidget extends StatelessWidget {
       margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: context.appSurface,
         borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: context.appBorder),
         boxShadow: [
           BoxShadow(
-            color: Colors.grey.withOpacity(0.05),
+            color: Colors.black.withValues(alpha: 0.04),
             spreadRadius: 1,
             blurRadius: 5,
           ),
@@ -57,6 +59,7 @@ class CartItemWidget extends StatelessWidget {
                   style: GoogleFonts.poppins(
                     fontWeight: FontWeight.w600,
                     fontSize: 14,
+                    color: context.appTextPrimary,
                   ),
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
@@ -68,14 +71,14 @@ class CartItemWidget extends StatelessWidget {
                       padding: const EdgeInsets.symmetric(
                           horizontal: 6, vertical: 2),
                       decoration: BoxDecoration(
-                        color: Colors.grey.shade100,
+                        color: context.appSurfaceSoft,
                         borderRadius: BorderRadius.circular(4),
                       ),
                       child: Text(
                         'Color: ${cartItem.selectedColor}',
                         style: TextStyle(
                           fontSize: 10,
-                          color: AppColors.textSecondary,
+                          color: context.appTextSecondary,
                         ),
                       ),
                     ),
@@ -84,14 +87,14 @@ class CartItemWidget extends StatelessWidget {
                       padding: const EdgeInsets.symmetric(
                           horizontal: 6, vertical: 2),
                       decoration: BoxDecoration(
-                        color: Colors.grey.shade100,
+                        color: context.appSurfaceSoft,
                         borderRadius: BorderRadius.circular(4),
                       ),
                       child: Text(
                         'Size: ${cartItem.selectedSize}',
                         style: TextStyle(
                           fontSize: 10,
-                          color: AppColors.textSecondary,
+                          color: context.appTextSecondary,
                         ),
                       ),
                     ),
@@ -128,7 +131,7 @@ class CartItemWidget extends StatelessWidget {
                             '${cartItem.quantity}',
                             style: const TextStyle(
                               fontWeight: FontWeight.bold,
-                            ),
+                            ).copyWith(color: context.appTextPrimary),
                           ),
                         ),
                         IconButton(

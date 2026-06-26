@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../config/app_colors.dart';
+import '../../config/theme_extensions.dart';
 import '../main/main_screen.dart';
 
 class OrderSuccessScreen extends StatelessWidget {
@@ -9,7 +10,7 @@ class OrderSuccessScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: context.appBackground,
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.fromLTRB(28, 28, 28, 24),
@@ -57,7 +58,7 @@ class OrderSuccessScreen extends StatelessWidget {
                 style: GoogleFonts.poppins(
                   fontSize: 22,
                   fontWeight: FontWeight.w800,
-                  color: AppColors.textPrimary,
+                  color: context.appTextPrimary,
                 ),
               ),
               const SizedBox(height: 12),
@@ -67,7 +68,7 @@ class OrderSuccessScreen extends StatelessWidget {
                 style: GoogleFonts.poppins(
                   fontSize: 13,
                   height: 1.7,
-                  color: AppColors.textLight,
+                  color: context.appTextSecondary,
                 ),
               ),
               const Spacer(),

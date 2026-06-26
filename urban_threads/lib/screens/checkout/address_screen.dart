@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../config/app_colors.dart';
+import '../../config/theme_extensions.dart';
 import '../../models/cart_item_model.dart';
 import 'payment_screen.dart';
 
@@ -40,9 +41,9 @@ class _AddressScreenState extends State<AddressScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: context.appBackground,
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: context.appBackground,
         elevation: 0,
         leading: IconButton(
           onPressed: () => Navigator.pop(context),
@@ -54,7 +55,7 @@ class _AddressScreenState extends State<AddressScreen> {
           style: GoogleFonts.poppins(
             fontSize: 15,
             fontWeight: FontWeight.w700,
-            color: AppColors.textPrimary,
+            color: context.appTextPrimary,
           ),
         ),
       ),
@@ -69,7 +70,7 @@ class _AddressScreenState extends State<AddressScreen> {
                 style: GoogleFonts.poppins(
                   fontSize: 20,
                   fontWeight: FontWeight.w800,
-                  color: AppColors.textPrimary,
+                  color: context.appTextPrimary,
                 ),
               ),
               const SizedBox(height: 8),
@@ -78,34 +79,33 @@ class _AddressScreenState extends State<AddressScreen> {
                 style: GoogleFonts.poppins(
                   fontSize: 13,
                   height: 1.6,
-                  color: AppColors.textSecondary,
+                  color: context.appTextSecondary,
                 ),
               ),
               const SizedBox(height: 22),
               Container(
                 padding: const EdgeInsets.all(14),
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: context.appSurface,
                   borderRadius: BorderRadius.circular(14),
-                  border:
-                      Border.all(color: AppColors.textSecondary, width: 1.2),
+                  border: Border.all(color: context.appBorder, width: 1.2),
                 ),
                 child: Row(
                   children: [
-                    const Icon(Icons.location_on_outlined,
-                        color: AppColors.textSecondary),
+                    Icon(Icons.location_on_outlined,
+                        color: context.appTextSecondary),
                     const SizedBox(width: 12),
                     Expanded(
                       child: Text(
                         'San Diego, CA',
                         style: GoogleFonts.poppins(
                           fontWeight: FontWeight.w700,
-                          color: AppColors.textPrimary,
+                          color: context.appTextPrimary,
                         ),
                       ),
                     ),
-                    const Icon(Icons.my_location_rounded,
-                        color: AppColors.textSecondary),
+                    Icon(Icons.my_location_rounded,
+                        color: context.appTextSecondary),
                   ],
                 ),
               ),
@@ -115,7 +115,7 @@ class _AddressScreenState extends State<AddressScreen> {
                 style: GoogleFonts.poppins(
                   fontSize: 17,
                   fontWeight: FontWeight.w800,
-                  color: AppColors.textPrimary,
+                  color: context.appTextPrimary,
                 ),
               ),
               const SizedBox(height: 12),
@@ -178,10 +178,10 @@ class _AddressScreenState extends State<AddressScreen> {
         duration: const Duration(milliseconds: 180),
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: context.appSurface,
           borderRadius: BorderRadius.circular(14),
           border: Border.all(
-            color: isSelected ? AppColors.secondary : Colors.grey.shade200,
+            color: isSelected ? AppColors.secondary : context.appBorder,
             width: isSelected ? 1.6 : 1,
           ),
         ),
@@ -196,7 +196,7 @@ class _AddressScreenState extends State<AddressScreen> {
                     style: GoogleFonts.poppins(
                       fontSize: 14,
                       fontWeight: FontWeight.w800,
-                      color: AppColors.textPrimary,
+                      color: context.appTextPrimary,
                     ),
                   ),
                   const SizedBox(height: 4),
@@ -204,7 +204,7 @@ class _AddressScreenState extends State<AddressScreen> {
                     address['detail'] as String,
                     style: GoogleFonts.poppins(
                       fontSize: 11,
-                      color: AppColors.textLight,
+                      color: context.appTextLight,
                     ),
                   ),
                 ],
@@ -214,11 +214,10 @@ class _AddressScreenState extends State<AddressScreen> {
               width: 58,
               height: 58,
               decoration: BoxDecoration(
-                color: pinColor.withOpacity(0.08),
+                color: pinColor.withValues(alpha: 0.08),
                 shape: BoxShape.circle,
                 border: Border.all(
-                  color:
-                      isSelected ? AppColors.secondary : Colors.grey.shade100,
+                  color: isSelected ? AppColors.secondary : context.appBorder,
                   width: isSelected ? 3 : 1,
                 ),
               ),

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import '../../config/app_colors.dart';
+import '../../config/theme_extensions.dart';
 import '../../models/cart_item_model.dart';
 import '../../providers/cart_provider.dart';
 import '../../widgets/product_image.dart';
@@ -20,7 +21,7 @@ class _CartScreenState extends State<CartScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: context.appBackground,
       body: SafeArea(
         child: Consumer<CartProvider>(
           builder: (context, cartProvider, child) {
@@ -121,14 +122,14 @@ class _CartScreenState extends State<CartScreen> {
                   style: GoogleFonts.poppins(
                     fontSize: 22,
                     fontWeight: FontWeight.w800,
-                    color: AppColors.textPrimary,
+                    color: context.appTextPrimary,
                   ),
                 ),
                 Text(
                   '$itemCount ${itemCount == 1 ? 'item' : 'items'} ready for checkout',
                   style: GoogleFonts.poppins(
                     fontSize: 12,
-                    color: AppColors.textSecondary,
+                    color: context.appTextSecondary,
                     fontWeight: FontWeight.w500,
                   ),
                 ),
@@ -153,9 +154,9 @@ class _CartScreenState extends State<CartScreen> {
     return Container(
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: context.appSurface,
         borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: const Color(0xFFEDEFF4)),
+        border: Border.all(color: context.appBorder),
       ),
       child: Row(
         children: [
@@ -180,7 +181,7 @@ class _CartScreenState extends State<CartScreen> {
               style: GoogleFonts.poppins(
                 fontSize: 13,
                 fontWeight: FontWeight.w700,
-                color: AppColors.textPrimary,
+                color: context.appTextPrimary,
               ),
             ),
           ),
@@ -213,12 +214,12 @@ class _CartScreenState extends State<CartScreen> {
       duration: const Duration(milliseconds: 180),
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: context.appSurface,
         borderRadius: BorderRadius.circular(20),
         border: Border.all(
           color: isSelected
               ? AppColors.secondary.withValues(alpha: 0.42)
-              : const Color(0xFFEDEFF4),
+              : context.appBorder,
           width: isSelected ? 1.4 : 1,
         ),
       ),
@@ -258,7 +259,7 @@ class _CartScreenState extends State<CartScreen> {
                             fontSize: 13,
                             height: 1.25,
                             fontWeight: FontWeight.w800,
-                            color: AppColors.textPrimary,
+                            color: context.appTextPrimary,
                           ),
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
@@ -267,11 +268,11 @@ class _CartScreenState extends State<CartScreen> {
                       InkWell(
                         onTap: onRemove,
                         borderRadius: BorderRadius.circular(16),
-                        child: const Padding(
-                          padding: EdgeInsets.all(4),
+                        child: Padding(
+                          padding: const EdgeInsets.all(4),
                           child: Icon(
                             Icons.close_rounded,
-                            color: AppColors.textLight,
+                            color: context.appTextLight,
                             size: 18,
                           ),
                         ),
@@ -322,7 +323,7 @@ class _CartScreenState extends State<CartScreen> {
       height: 34,
       padding: const EdgeInsets.all(3),
       decoration: BoxDecoration(
-        color: const Color(0xFFF6F6F8),
+        color: context.appSurfaceSoft,
         borderRadius: BorderRadius.circular(18),
       ),
       child: Row(
@@ -340,6 +341,7 @@ class _CartScreenState extends State<CartScreen> {
                 style: GoogleFonts.poppins(
                   fontWeight: FontWeight.w800,
                   fontSize: 12,
+                  color: context.appTextPrimary,
                 ),
               ),
             ),
@@ -366,13 +368,13 @@ class _CartScreenState extends State<CartScreen> {
         width: 28,
         height: 28,
         decoration: BoxDecoration(
-          color: isFilled ? AppColors.secondary : Colors.white,
+          color: isFilled ? AppColors.secondary : context.appSurface,
           shape: BoxShape.circle,
         ),
         child: Icon(
           icon,
           size: 16,
-          color: isFilled ? Colors.white : AppColors.textSecondary,
+          color: isFilled ? Colors.white : context.appTextSecondary,
         ),
       ),
     );
@@ -392,7 +394,7 @@ class _CartScreenState extends State<CartScreen> {
             width: 44,
             height: 44,
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: context.appSurface,
               borderRadius: BorderRadius.circular(14),
             ),
             child: const Icon(
@@ -410,14 +412,14 @@ class _CartScreenState extends State<CartScreen> {
                   style: GoogleFonts.poppins(
                     fontSize: 13,
                     fontWeight: FontWeight.w800,
-                    color: AppColors.textPrimary,
+                    color: context.appTextPrimary,
                   ),
                 ),
                 Text(
                   'Arrives within 3 to 4 days after checkout',
                   style: GoogleFonts.poppins(
                     fontSize: 11,
-                    color: AppColors.textSecondary,
+                    color: context.appTextSecondary,
                   ),
                 ),
               ],
@@ -433,9 +435,9 @@ class _CartScreenState extends State<CartScreen> {
       height: 54,
       padding: const EdgeInsets.symmetric(horizontal: 14),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: context.appSurface,
         borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: const Color(0xFFEDEFF4)),
+        border: Border.all(color: context.appBorder),
       ),
       child: Row(
         children: [
@@ -449,14 +451,14 @@ class _CartScreenState extends State<CartScreen> {
               'Apply promo code',
               style: GoogleFonts.poppins(
                 fontSize: 12,
-                color: AppColors.textSecondary,
+                color: context.appTextSecondary,
                 fontWeight: FontWeight.w600,
               ),
             ),
           ),
-          const Icon(
+          Icon(
             Icons.chevron_right_rounded,
-            color: AppColors.textSecondary,
+            color: context.appTextSecondary,
           ),
         ],
       ),
@@ -475,7 +477,7 @@ class _CartScreenState extends State<CartScreen> {
     return Container(
       padding: const EdgeInsets.fromLTRB(22, 16, 22, 18),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: context.appSurface,
         borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
         boxShadow: [
           BoxShadow(
@@ -509,7 +511,7 @@ class _CartScreenState extends State<CartScreen> {
                     style: GoogleFonts.poppins(
                       fontSize: 13,
                       fontWeight: FontWeight.w800,
-                      color: AppColors.textPrimary,
+                      color: context.appTextPrimary,
                     ),
                   ),
                 ),
@@ -518,7 +520,7 @@ class _CartScreenState extends State<CartScreen> {
                   style: GoogleFonts.poppins(
                     fontSize: 20,
                     fontWeight: FontWeight.w800,
-                    color: AppColors.textPrimary,
+                    color: context.appTextPrimary,
                   ),
                 ),
               ],
@@ -577,7 +579,7 @@ class _CartScreenState extends State<CartScreen> {
           label,
           style: GoogleFonts.poppins(
             fontSize: 12,
-            color: AppColors.textSecondary,
+            color: context.appTextSecondary,
             fontWeight: FontWeight.w600,
           ),
         ),
@@ -585,7 +587,7 @@ class _CartScreenState extends State<CartScreen> {
           '\$${value.toStringAsFixed(2)}',
           style: GoogleFonts.poppins(
             fontSize: 12,
-            color: AppColors.textPrimary,
+            color: context.appTextPrimary,
             fontWeight: FontWeight.w800,
           ),
         ),
@@ -622,7 +624,7 @@ class _CartScreenState extends State<CartScreen> {
             style: GoogleFonts.poppins(
               fontSize: 22,
               fontWeight: FontWeight.w800,
-              color: AppColors.textPrimary,
+              color: context.appTextPrimary,
             ),
           ),
           const SizedBox(height: 8),
@@ -630,7 +632,7 @@ class _CartScreenState extends State<CartScreen> {
             'Add products you love and they will appear here for checkout.',
             textAlign: TextAlign.center,
             style: GoogleFonts.poppins(
-              color: AppColors.textSecondary,
+              color: context.appTextSecondary,
               height: 1.6,
               fontSize: 13,
             ),
@@ -646,7 +648,7 @@ class _CartScreenState extends State<CartScreen> {
     required VoidCallback onTap,
   }) {
     return Material(
-      color: Colors.white,
+      color: context.appSurface,
       borderRadius: BorderRadius.circular(16),
       child: InkWell(
         onTap: onTap,
@@ -654,7 +656,7 @@ class _CartScreenState extends State<CartScreen> {
         child: SizedBox(
           width: 46,
           height: 46,
-          child: Icon(icon, color: AppColors.textPrimary, size: 20),
+          child: Icon(icon, color: context.appTextPrimary, size: 20),
         ),
       ),
     );
@@ -666,7 +668,7 @@ class _CartScreenState extends State<CartScreen> {
       width: 22,
       height: 22,
       decoration: BoxDecoration(
-        color: isSelected ? AppColors.secondary : Colors.white,
+        color: isSelected ? AppColors.secondary : context.appSurface,
         borderRadius: BorderRadius.circular(7),
         border: Border.all(
           color: isSelected ? AppColors.secondary : const Color(0xFFD9DDE6),
@@ -683,14 +685,14 @@ class _CartScreenState extends State<CartScreen> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(
-        color: const Color(0xFFF6F6F8),
+        color: context.appSurfaceSoft,
         borderRadius: BorderRadius.circular(999),
       ),
       child: Text(
         label,
         style: GoogleFonts.poppins(
           fontSize: 10,
-          color: AppColors.textSecondary,
+          color: context.appTextSecondary,
           fontWeight: FontWeight.w600,
         ),
       ),

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import '../../config/app_colors.dart';
+import '../../config/theme_extensions.dart';
 import '../../models/cart_item_model.dart';
 import '../../models/order_model.dart';
 import '../../widgets/product_image.dart';
@@ -17,10 +18,10 @@ class OrderDetailScreen extends StatelessWidget {
     final date = DateFormat('MMM d, yyyy').format(order.createdAt);
 
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: context.appBackground,
       appBar: AppBar(
         title: const Text('Order Detail'),
-        backgroundColor: Colors.white,
+        backgroundColor: context.appBackground,
         elevation: 0,
       ),
       body: ListView(
@@ -29,8 +30,9 @@ class OrderDetailScreen extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(18),
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: context.appSurface,
               borderRadius: BorderRadius.circular(18),
+              border: Border.all(color: context.appBorder),
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -42,7 +44,7 @@ class OrderDetailScreen extends StatelessWidget {
                       'Order #${order.id}',
                       style: GoogleFonts.poppins(
                         fontWeight: FontWeight.w800,
-                        color: AppColors.textPrimary,
+                        color: context.appTextPrimary,
                       ),
                     ),
                     Container(
@@ -51,7 +53,7 @@ class OrderDetailScreen extends StatelessWidget {
                         vertical: 6,
                       ),
                       decoration: BoxDecoration(
-                        color: statusColor.withOpacity(0.1),
+                        color: statusColor.withValues(alpha: 0.1),
                         borderRadius: BorderRadius.circular(999),
                       ),
                       child: Text(
@@ -68,17 +70,17 @@ class OrderDetailScreen extends StatelessWidget {
                 const SizedBox(height: 14),
                 Row(
                   children: [
-                    const Icon(
+                    Icon(
                       Icons.calendar_today_outlined,
                       size: 16,
-                      color: AppColors.textLight,
+                      color: context.appTextLight,
                     ),
                     const SizedBox(width: 8),
                     Text(
                       date,
                       style: GoogleFonts.poppins(
                         fontSize: 13,
-                        color: AppColors.textSecondary,
+                        color: context.appTextSecondary,
                       ),
                     ),
                   ],
@@ -90,7 +92,7 @@ class OrderDetailScreen extends StatelessWidget {
                     Text(
                       'Total Amount',
                       style: GoogleFonts.poppins(
-                        color: AppColors.textSecondary,
+                        color: context.appTextSecondary,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
@@ -113,23 +115,24 @@ class OrderDetailScreen extends StatelessWidget {
             style: GoogleFonts.poppins(
               fontSize: 18,
               fontWeight: FontWeight.w800,
-              color: AppColors.textPrimary,
+              color: context.appTextPrimary,
             ),
           ),
           const SizedBox(height: 12),
-          ...order.items.map(_buildOrderProduct),
+          ...order.items.map((item) => _buildOrderProduct(context, item)),
         ],
       ),
     );
   }
 
-  Widget _buildOrderProduct(CartItem item) {
+  Widget _buildOrderProduct(BuildContext context, CartItem item) {
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: context.appSurface,
         borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: context.appBorder),
       ),
       child: Row(
         children: [
@@ -150,7 +153,7 @@ class OrderDetailScreen extends StatelessWidget {
                   item.product.name,
                   style: GoogleFonts.poppins(
                     fontWeight: FontWeight.w800,
-                    color: AppColors.textPrimary,
+                    color: context.appTextPrimary,
                   ),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
@@ -159,7 +162,7 @@ class OrderDetailScreen extends StatelessWidget {
                   'Color: ${item.selectedColor.isEmpty ? 'Default' : item.selectedColor}  Qty: ${item.quantity}',
                   style: GoogleFonts.poppins(
                     fontSize: 12,
-                    color: AppColors.textLight,
+                    color: context.appTextLight,
                   ),
                 ),
               ],
@@ -169,7 +172,7 @@ class OrderDetailScreen extends StatelessWidget {
             '\$${item.subtotal.toStringAsFixed(2)}',
             style: GoogleFonts.poppins(
               fontWeight: FontWeight.w800,
-              color: AppColors.textPrimary,
+              color: context.appTextPrimary,
             ),
           ),
         ],

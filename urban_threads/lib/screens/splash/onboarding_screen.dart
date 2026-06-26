@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import '../../config/app_colors.dart';
+import '../../config/theme_extensions.dart';
 import '../../widgets/custom_button.dart';
 import '../../screens/Auth/register_screen.dart';
 import '../../screens/Auth/login_screen.dart';
@@ -35,7 +36,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     OnboardingItem(
       title: 'Find The Most Suitable',
       subtitle:
-          'Urna amet, suspendisse ullamcorper ac elit diam facilisis cursus vestibulum.',
+          'Urna amet, suspendisse ullamcorper ac.',
       image: 'assets/images/onboarding_3.jpg',
       icon: Icons.emoji_objects_outlined,
     ),
@@ -44,7 +45,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: context.appBackground,
       body: SafeArea(
         child: Column(
           children: [
@@ -60,7 +61,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                   child: Text(
                     'Skip',
                     style: GoogleFonts.poppins(
-                      color: AppColors.textSecondary,
+                      color: context.appTextSecondary,
                       fontSize: 14,
                       fontWeight: FontWeight.w600,
                     ),
@@ -129,7 +130,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                             Text(
                               'Already Have an Account?',
                               style: GoogleFonts.poppins(
-                                color: AppColors.textSecondary,
+                                color: context.appTextSecondary,
                                 fontSize: 14,
                               ),
                             ),
@@ -180,7 +181,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             height: 380,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(32),
-              color: AppColors.secondary.withOpacity(0.08),
+              color: AppColors.secondary.withValues(alpha: 0.08),
             ),
             child: ClipRRect(
               borderRadius: BorderRadius.circular(32),
@@ -197,7 +198,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             style: GoogleFonts.poppins(
               fontSize: 28,
               fontWeight: FontWeight.bold,
-              color: AppColors.textPrimary,
+              color: context.appTextPrimary,
               height: 1.2,
             ),
             textAlign: TextAlign.center,
@@ -208,7 +209,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             item.subtitle,
             style: GoogleFonts.poppins(
               fontSize: 14,
-              color: AppColors.textSecondary,
+              color: context.appTextSecondary,
               height: 1.6,
             ),
             textAlign: TextAlign.center,

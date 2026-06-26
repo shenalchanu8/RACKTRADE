@@ -30,11 +30,11 @@ class AppTheme {
     useMaterial3: true,
     brightness: Brightness.dark,
     primaryColor: AppColors.primary,
-    scaffoldBackgroundColor: const Color(0xFF1A1A2E),
+    scaffoldBackgroundColor: const Color(0xFF10131A),
     colorScheme: const ColorScheme.dark(
       primary: AppColors.secondary,
       secondary: AppColors.secondary,
-      surface: Color(0xFF2D2D44),
+      surface: Color(0xFF1A1F2B),
       error: AppColors.error,
     ),
     fontFamily: GoogleFonts.poppins().fontFamily,

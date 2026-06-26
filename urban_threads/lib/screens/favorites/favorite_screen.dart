@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import '../../config/app_colors.dart';
+import '../../config/theme_extensions.dart';
 import '../../models/product_model.dart';
 import '../../providers/favorite_provider.dart';
 import '../../widgets/product_image.dart';
@@ -13,10 +14,10 @@ class FavoriteScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: context.appBackground,
       appBar: AppBar(
         title: const Text('Favorites'),
-        backgroundColor: Colors.white,
+        backgroundColor: context.appBackground,
         elevation: 0,
       ),
       body: Consumer<FavoriteProvider>(
@@ -24,7 +25,7 @@ class FavoriteScreen extends StatelessWidget {
           final products = favoriteProvider.items;
 
           if (products.isEmpty) {
-            return _buildEmptyState();
+            return _buildEmptyState(context);
           }
 
           return GridView.builder(
@@ -47,7 +48,7 @@ class FavoriteScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildEmptyState() {
+  Widget _buildEmptyState(BuildContext context) {
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(32),
@@ -58,7 +59,7 @@ class FavoriteScreen extends StatelessWidget {
               width: 86,
               height: 86,
               decoration: BoxDecoration(
-                color: AppColors.secondary.withOpacity(0.1),
+                color: AppColors.secondary.withValues(alpha: 0.1),
                 shape: BoxShape.circle,
               ),
               child: const Icon(
@@ -73,7 +74,7 @@ class FavoriteScreen extends StatelessWidget {
               style: GoogleFonts.poppins(
                 fontSize: 20,
                 fontWeight: FontWeight.w700,
-                color: AppColors.textPrimary,
+                color: context.appTextPrimary,
               ),
             ),
             const SizedBox(height: 6),
@@ -81,7 +82,7 @@ class FavoriteScreen extends StatelessWidget {
               'Tap the heart on any product to save it here.',
               textAlign: TextAlign.center,
               style: GoogleFonts.poppins(
-                color: AppColors.textSecondary,
+                color: context.appTextSecondary,
               ),
             ),
           ],
@@ -106,11 +107,12 @@ class FavoriteScreen extends StatelessWidget {
       },
       child: Container(
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: context.appSurface,
           borderRadius: BorderRadius.circular(16),
+          border: Border.all(color: context.appBorder),
           boxShadow: [
             BoxShadow(
-              color: Colors.grey.withOpacity(0.08),
+              color: Colors.black.withValues(alpha: 0.05),
               blurRadius: 12,
               offset: const Offset(0, 6),
             ),
@@ -134,7 +136,8 @@ class FavoriteScreen extends StatelessWidget {
                     right: 8,
                     child: IconButton.filled(
                       style: IconButton.styleFrom(
-                        backgroundColor: Colors.white.withOpacity(0.88),
+                        backgroundColor:
+                            context.appSurface.withValues(alpha: 0.9),
                       ),
                       onPressed: () =>
                           favoriteProvider.removeFavorite(product.id),
@@ -158,6 +161,7 @@ class FavoriteScreen extends StatelessWidget {
                     style: GoogleFonts.poppins(
                       fontSize: 13,
                       fontWeight: FontWeight.w700,
+                      color: context.appTextPrimary,
                     ),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
@@ -166,7 +170,7 @@ class FavoriteScreen extends StatelessWidget {
                     product.brand ?? product.category,
                     style: GoogleFonts.poppins(
                       fontSize: 11,
-                      color: AppColors.textLight,
+                      color: context.appTextLight,
                     ),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,

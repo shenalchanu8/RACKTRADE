@@ -5,6 +5,7 @@ import '../../providers/auth_provider.dart';
 import '../../widgets/custom_text_field.dart';
 import '../../widgets/custom_button.dart';
 import '../../config/app_colors.dart';
+import '../../config/theme_extensions.dart';
 import '../main/main_screen.dart';
 import 'register_screen.dart';
 
@@ -41,7 +42,7 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: context.appBackground,
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(24),
@@ -55,11 +56,11 @@ class _LoginScreenState extends State<LoginScreen> {
                   width: 170,
                   height: 170,
                   decoration: BoxDecoration(
-                    color: Colors.white,
+                    color: context.appSurface,
                     borderRadius: BorderRadius.circular(24),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.grey.withOpacity(0.1),
+                        color: Colors.black.withValues(alpha: 0.06),
                         spreadRadius: 5,
                         blurRadius: 10,
                         offset: const Offset(0, 3),
@@ -81,6 +82,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 style: GoogleFonts.poppins(
                   fontSize: 28,
                   fontWeight: FontWeight.bold,
+                  color: context.appTextPrimary,
                 ),
               ),
               const SizedBox(height: 8),
@@ -88,7 +90,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 'Please login with registered account',
                 style: GoogleFonts.poppins(
                   fontSize: 16,
-                  color: AppColors.textSecondary,
+                  color: context.appTextSecondary,
                 ),
               ),
               const SizedBox(height: 32),
@@ -127,7 +129,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           _obscurePassword
                               ? Icons.visibility_off
                               : Icons.visibility,
-                          color: AppColors.textLight,
+                          color: context.appTextLight,
                         ),
                       ),
                       validator: (value) {
@@ -145,7 +147,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 alignment: Alignment.centerRight,
                 child: TextButton(
                   onPressed: () {},
-                  child: Text(
+                  child: const Text(
                     'Forgot Password?',
                     style: TextStyle(
                       color: AppColors.secondary,
@@ -166,18 +168,18 @@ class _LoginScreenState extends State<LoginScreen> {
               const SizedBox(height: 24),
               Row(
                 children: [
-                  Expanded(child: Divider(color: Colors.grey.shade300)),
+                  Expanded(child: Divider(color: context.appBorder)),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 16),
                     child: Text(
                       'Or using other method',
                       style: GoogleFonts.poppins(
-                        color: AppColors.textLight,
+                        color: context.appTextLight,
                         fontSize: 12,
                       ),
                     ),
                   ),
-                  Expanded(child: Divider(color: Colors.grey.shade300)),
+                  Expanded(child: Divider(color: context.appBorder)),
                 ],
               ),
               const SizedBox(height: 24),
@@ -189,6 +191,8 @@ class _LoginScreenState extends State<LoginScreen> {
                       icon: const Icon(Icons.g_mobiledata, size: 28),
                       label: const Text('Sign In with Google'),
                       style: OutlinedButton.styleFrom(
+                        foregroundColor: context.appTextPrimary,
+                        side: BorderSide(color: context.appBorder),
                         padding: const EdgeInsets.symmetric(vertical: 14),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),
@@ -207,6 +211,8 @@ class _LoginScreenState extends State<LoginScreen> {
                       icon: const Icon(Icons.facebook, size: 28),
                       label: const Text('Sign In with Facebook'),
                       style: OutlinedButton.styleFrom(
+                        foregroundColor: context.appTextPrimary,
+                        side: BorderSide(color: context.appBorder),
                         padding: const EdgeInsets.symmetric(vertical: 14),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),
@@ -223,7 +229,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   Text(
                     "Don't have an account?",
                     style: GoogleFonts.poppins(
-                      color: AppColors.textSecondary,
+                      color: context.appTextSecondary,
                       fontSize: 14,
                     ),
                   ),
@@ -263,6 +269,8 @@ class _LoginScreenState extends State<LoginScreen> {
         _emailController.text,
         _passwordController.text,
       );
+
+      if (!mounted) return;
 
       setState(() {
         _isLoading = false;
