@@ -20,229 +20,452 @@ class _CartScreenState extends State<CartScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        elevation: 0,
-        leading: IconButton(
-          onPressed: () => Navigator.maybePop(context),
-          icon: const Icon(Icons.arrow_back_ios_new_rounded, size: 20),
-        ),
-        centerTitle: true,
-        title: Text(
-          'My Cart',
-          style: GoogleFonts.poppins(
-            fontSize: 15,
-            fontWeight: FontWeight.w700,
-            color: AppColors.textPrimary,
-          ),
-        ),
-        actions: [
-          IconButton(
-            onPressed: () {},
-            icon: const Icon(Icons.shopping_bag_outlined),
-          ),
-        ],
-      ),
-      body: Consumer<CartProvider>(
-        builder: (context, cartProvider, child) {
-          if (cartProvider.items.isEmpty) {
-            return _buildEmptyCart();
-          }
+      backgroundColor: AppColors.background,
+      body: SafeArea(
+        child: Consumer<CartProvider>(
+          builder: (context, cartProvider, child) {
+            if (cartProvider.items.isEmpty) {
+              return _buildEmptyCart();
+            }
 
-          _syncSelected(cartProvider.items);
-          final selectedItems = cartProvider.items
-              .where((item) => _selectedIds.contains(_itemKey(item)))
-              .toList();
-          final subtotal = selectedItems.fold<double>(
-            0,
-            (total, item) => total + item.subtotal,
-          );
-          const shipping = 6.00;
-          final total = subtotal + shipping;
+            _syncSelected(cartProvider.items);
+            final selectedItems = cartProvider.items
+                .where((item) => _selectedIds.contains(_itemKey(item)))
+                .toList();
+            final selectedCount = selectedItems.fold<int>(
+              0,
+              (total, item) => total + item.quantity,
+            );
+            final subtotal = selectedItems.fold<double>(
+              0,
+              (total, item) => total + item.subtotal,
+            );
+            final shipping = selectedItems.isEmpty ? 0.0 : 6.00;
+            final total = subtotal + shipping;
 
-          return Column(
-            children: [
-              Expanded(
-                child: ListView.separated(
-                  padding: const EdgeInsets.fromLTRB(20, 12, 20, 20),
-                  itemCount: cartProvider.items.length,
-                  separatorBuilder: (_, __) => Divider(
-                    height: 22,
-                    color: Colors.grey.shade100,
+            return Column(
+              children: [
+                _buildHeader(cartProvider.items.length),
+                Expanded(
+                  child: ListView(
+                    padding: const EdgeInsets.fromLTRB(20, 10, 20, 20),
+                    children: [
+                      _buildSelectionBar(
+                        items: cartProvider.items,
+                        selectedItems: selectedItems,
+                        cartProvider: cartProvider,
+                      ),
+                      const SizedBox(height: 14),
+                      ...cartProvider.items.map(
+                        (item) {
+                          final key = _itemKey(item);
+                          return Padding(
+                            padding: const EdgeInsets.only(bottom: 14),
+                            child: _buildCartCard(
+                              item: item,
+                              isSelected: _selectedIds.contains(key),
+                              onSelected: () => _toggleItem(key),
+                              onQuantityChanged: (quantity) {
+                                cartProvider.updateCartItemQuantity(
+                                  item,
+                                  quantity,
+                                );
+                              },
+                              onRemove: () {
+                                cartProvider.removeCartItem(item);
+                                setState(() => _selectedIds.remove(key));
+                              },
+                            ),
+                          );
+                        },
+                      ),
+                      _buildDeliveryCard(),
+                      const SizedBox(height: 14),
+                      _buildPromoCard(),
+                    ],
                   ),
-                  itemBuilder: (context, index) {
-                    final item = cartProvider.items[index];
-                    final key = _itemKey(item);
-                    return _buildCartRow(
-                      item: item,
-                      isSelected: _selectedIds.contains(key),
-                      onSelected: () {
-                        setState(() {
-                          if (_selectedIds.contains(key)) {
-                            _selectedIds.remove(key);
-                          } else {
-                            _selectedIds.add(key);
-                          }
-                        });
-                      },
-                      onQuantityChanged: (quantity) {
-                        cartProvider.updateCartItemQuantity(item, quantity);
-                      },
-                      onRemove: () {
-                        cartProvider.removeCartItem(item);
-                        setState(() => _selectedIds.remove(key));
-                      },
-                    );
-                  },
                 ),
-              ),
-              _buildSummaryPanel(
-                context: context,
-                subtotal: subtotal,
-                shipping: shipping,
-                total: total,
-                hasSelection: selectedItems.isNotEmpty,
-                checkoutItems: selectedItems,
-              ),
-            ],
-          );
-        },
+                _buildSummaryPanel(
+                  context: context,
+                  selectedCount: selectedCount,
+                  subtotal: subtotal,
+                  shipping: shipping,
+                  total: total,
+                  hasSelection: selectedItems.isNotEmpty,
+                  checkoutItems: selectedItems,
+                ),
+              ],
+            );
+          },
+        ),
       ),
     );
   }
 
-  Widget _buildCartRow({
+  Widget _buildHeader(int itemCount) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(20, 14, 20, 10),
+      child: Row(
+        children: [
+          _buildHeaderButton(
+            icon: Icons.arrow_back_ios_new_rounded,
+            onTap: () => Navigator.maybePop(context),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'My Cart',
+                  style: GoogleFonts.poppins(
+                    fontSize: 22,
+                    fontWeight: FontWeight.w800,
+                    color: AppColors.textPrimary,
+                  ),
+                ),
+                Text(
+                  '$itemCount ${itemCount == 1 ? 'item' : 'items'} ready for checkout',
+                  style: GoogleFonts.poppins(
+                    fontSize: 12,
+                    color: AppColors.textSecondary,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          _buildHeaderButton(
+            icon: Icons.shopping_bag_outlined,
+            onTap: () {},
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSelectionBar({
+    required List<CartItem> items,
+    required List<CartItem> selectedItems,
+    required CartProvider cartProvider,
+  }) {
+    final isAllSelected = selectedItems.length == items.length;
+    return Container(
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(18),
+        border: Border.all(color: const Color(0xFFEDEFF4)),
+      ),
+      child: Row(
+        children: [
+          GestureDetector(
+            onTap: () {
+              setState(() {
+                if (isAllSelected) {
+                  _selectedIds.clear();
+                } else {
+                  _selectedIds
+                    ..clear()
+                    ..addAll(items.map(_itemKey));
+                }
+              });
+            },
+            child: _buildCheckBox(isAllSelected),
+          ),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Text(
+              isAllSelected ? 'All items selected' : 'Select all items',
+              style: GoogleFonts.poppins(
+                fontSize: 13,
+                fontWeight: FontWeight.w700,
+                color: AppColors.textPrimary,
+              ),
+            ),
+          ),
+          TextButton.icon(
+            onPressed: selectedItems.isEmpty
+                ? null
+                : () {
+                    cartProvider.removeItems(selectedItems);
+                    setState(() => _selectedIds.clear());
+                  },
+            icon: const Icon(Icons.delete_outline_rounded, size: 18),
+            label: Text(
+              'Remove',
+              style: GoogleFonts.poppins(fontWeight: FontWeight.w700),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildCartCard({
     required CartItem item,
     required bool isSelected,
     required VoidCallback onSelected,
     required ValueChanged<int> onQuantityChanged,
     required VoidCallback onRemove,
   }) {
-    return Row(
-      children: [
-        GestureDetector(
-          onTap: onSelected,
-          child: AnimatedContainer(
-            duration: const Duration(milliseconds: 180),
-            width: 20,
-            height: 20,
-            decoration: BoxDecoration(
-              color: isSelected ? AppColors.secondary : Colors.white,
-              borderRadius: BorderRadius.circular(5),
-              border: Border.all(
-                color: isSelected ? AppColors.secondary : Colors.grey.shade300,
-                width: 1.5,
-              ),
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 180),
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(
+          color: isSelected
+              ? AppColors.secondary.withValues(alpha: 0.42)
+              : const Color(0xFFEDEFF4),
+          width: isSelected ? 1.4 : 1,
+        ),
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          GestureDetector(
+            onTap: onSelected,
+            child: Padding(
+              padding: const EdgeInsets.only(top: 34),
+              child: _buildCheckBox(isSelected),
             ),
-            child: isSelected
-                ? const Icon(Icons.check, color: Colors.white, size: 14)
-                : null,
           ),
-        ),
-        const SizedBox(width: 14),
-        SizedBox(
-          width: 74,
-          height: 74,
-          child: ProductImage(
-            imageUrl: item.product.imageUrl,
-            borderRadius: BorderRadius.circular(12),
+          const SizedBox(width: 12),
+          SizedBox(
+            width: 92,
+            height: 108,
+            child: ProductImage(
+              imageUrl: item.product.imageUrl,
+              borderRadius: BorderRadius.circular(16),
+            ),
           ),
-        ),
-        const SizedBox(width: 12),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
+          const SizedBox(width: 12),
+          Expanded(
+            child: SizedBox(
+              height: 108,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Expanded(
-                    child: Text(
-                      item.product.name,
-                      style: GoogleFonts.poppins(
-                        fontSize: 13,
-                        fontWeight: FontWeight.w800,
-                        color: AppColors.textPrimary,
-                      ),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ),
-                  IconButton(
-                    onPressed: onRemove,
-                    icon: const Icon(
-                      Icons.delete_outline_rounded,
-                      color: AppColors.error,
-                      size: 18,
-                    ),
-                    visualDensity: VisualDensity.compact,
-                  ),
-                ],
-              ),
-              Text(
-                'Color: ${item.selectedColor.isEmpty ? 'Default' : item.selectedColor}',
-                style: GoogleFonts.poppins(
-                  fontSize: 11,
-                  color: AppColors.textLight,
-                ),
-              ),
-              const SizedBox(height: 8),
-              Row(
-                children: [
-                  _quantityButton(Icons.remove, () {
-                    onQuantityChanged(item.quantity - 1);
-                  }),
-                  SizedBox(
-                    width: 28,
-                    child: Center(
-                      child: Text(
-                        '${item.quantity}',
-                        style: GoogleFonts.poppins(
-                          fontWeight: FontWeight.w700,
-                          fontSize: 13,
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Expanded(
+                        child: Text(
+                          item.product.name,
+                          style: GoogleFonts.poppins(
+                            fontSize: 13,
+                            height: 1.25,
+                            fontWeight: FontWeight.w800,
+                            color: AppColors.textPrimary,
+                          ),
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
                         ),
                       ),
-                    ),
+                      InkWell(
+                        onTap: onRemove,
+                        borderRadius: BorderRadius.circular(16),
+                        child: const Padding(
+                          padding: EdgeInsets.all(4),
+                          child: Icon(
+                            Icons.close_rounded,
+                            color: AppColors.textLight,
+                            size: 18,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
-                  _quantityButton(Icons.add, () {
-                    onQuantityChanged(item.quantity + 1);
-                  }),
+                  const SizedBox(height: 7),
+                  Wrap(
+                    spacing: 6,
+                    runSpacing: 6,
+                    children: [
+                      _buildVariantChip(
+                        'Color: ${item.selectedColor.isEmpty ? 'Default' : item.selectedColor}',
+                      ),
+                      if (item.selectedSize.isNotEmpty)
+                        _buildVariantChip('Size: ${item.selectedSize}'),
+                    ],
+                  ),
                   const Spacer(),
-                  Text(
-                    '\$${item.subtotal.toStringAsFixed(2)}',
-                    style: GoogleFonts.poppins(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w800,
-                      color: AppColors.textPrimary,
-                    ),
+                  Row(
+                    children: [
+                      Text(
+                        '\$${item.subtotal.toStringAsFixed(2)}',
+                        style: GoogleFonts.poppins(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w800,
+                          color: AppColors.secondary,
+                        ),
+                      ),
+                      const Spacer(),
+                      _buildQuantityControl(item.quantity, onQuantityChanged),
+                    ],
                   ),
                 ],
               ),
-            ],
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 
-  Widget _quantityButton(IconData icon, VoidCallback onTap) {
+  Widget _buildQuantityControl(
+    int quantity,
+    ValueChanged<int> onQuantityChanged,
+  ) {
+    return Container(
+      height: 34,
+      padding: const EdgeInsets.all(3),
+      decoration: BoxDecoration(
+        color: const Color(0xFFF6F6F8),
+        borderRadius: BorderRadius.circular(18),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          _quantityButton(
+            Icons.remove,
+            () => onQuantityChanged(quantity - 1),
+          ),
+          SizedBox(
+            width: 32,
+            child: Center(
+              child: Text(
+                '$quantity',
+                style: GoogleFonts.poppins(
+                  fontWeight: FontWeight.w800,
+                  fontSize: 12,
+                ),
+              ),
+            ),
+          ),
+          _quantityButton(
+            Icons.add,
+            () => onQuantityChanged(quantity + 1),
+            isFilled: true,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _quantityButton(
+    IconData icon,
+    VoidCallback onTap, {
+    bool isFilled = false,
+  }) {
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(14),
       child: Container(
-        width: 26,
-        height: 26,
-        decoration: const BoxDecoration(
-          color: Color(0xFFF6F6F8),
+        width: 28,
+        height: 28,
+        decoration: BoxDecoration(
+          color: isFilled ? AppColors.secondary : Colors.white,
           shape: BoxShape.circle,
         ),
-        child: Icon(icon, size: 16, color: AppColors.textPrimary),
+        child: Icon(
+          icon,
+          size: 16,
+          color: isFilled ? Colors.white : AppColors.textSecondary,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildDeliveryCard() {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: AppColors.secondary.withValues(alpha: 0.08),
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: AppColors.secondary.withValues(alpha: 0.12)),
+      ),
+      child: Row(
+        children: [
+          Container(
+            width: 44,
+            height: 44,
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(14),
+            ),
+            child: const Icon(
+              Icons.local_shipping_outlined,
+              color: AppColors.secondary,
+            ),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Standard delivery',
+                  style: GoogleFonts.poppins(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w800,
+                    color: AppColors.textPrimary,
+                  ),
+                ),
+                Text(
+                  'Arrives within 3 to 4 days after checkout',
+                  style: GoogleFonts.poppins(
+                    fontSize: 11,
+                    color: AppColors.textSecondary,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildPromoCard() {
+    return Container(
+      height: 54,
+      padding: const EdgeInsets.symmetric(horizontal: 14),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(18),
+        border: Border.all(color: const Color(0xFFEDEFF4)),
+      ),
+      child: Row(
+        children: [
+          const Icon(
+            Icons.workspace_premium_outlined,
+            color: AppColors.secondary,
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Text(
+              'Apply promo code',
+              style: GoogleFonts.poppins(
+                fontSize: 12,
+                color: AppColors.textSecondary,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ),
+          const Icon(
+            Icons.chevron_right_rounded,
+            color: AppColors.textSecondary,
+          ),
+        ],
       ),
     );
   }
 
   Widget _buildSummaryPanel({
     required BuildContext context,
+    required int selectedCount,
     required double subtotal,
     required double shipping,
     required double total,
@@ -250,15 +473,15 @@ class _CartScreenState extends State<CartScreen> {
     required List<CartItem> checkoutItems,
   }) {
     return Container(
-      padding: const EdgeInsets.fromLTRB(24, 18, 24, 24),
+      padding: const EdgeInsets.fromLTRB(22, 16, 22, 18),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: const BorderRadius.vertical(top: Radius.circular(30)),
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.08),
-            blurRadius: 24,
-            offset: const Offset(0, -10),
+            color: Colors.black.withValues(alpha: 0.08),
+            blurRadius: 22,
+            offset: const Offset(0, -8),
           ),
         ],
       ),
@@ -268,55 +491,47 @@ class _CartScreenState extends State<CartScreen> {
           mainAxisSize: MainAxisSize.min,
           children: [
             Container(
-              width: 48,
+              width: 46,
               height: 5,
               decoration: BoxDecoration(
-                color: Colors.grey.shade200,
+                color: const Color(0xFFE5E7EF),
                 borderRadius: BorderRadius.circular(999),
               ),
             ),
-            const SizedBox(height: 18),
-            Container(
-              height: 50,
-              padding: const EdgeInsets.symmetric(horizontal: 14),
-              decoration: BoxDecoration(
-                color: const Color(0xFFF8F8FA),
-                borderRadius: BorderRadius.circular(14),
-                border: Border.all(color: Colors.grey.shade100),
-              ),
-              child: Row(
-                children: [
-                  const Icon(Icons.workspace_premium_outlined,
-                      color: AppColors.textLight),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: Text(
-                      'Enter your promo code',
-                      style: GoogleFonts.poppins(
-                        fontSize: 12,
-                        color: AppColors.textLight,
-                      ),
+            const SizedBox(height: 14),
+            Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    selectedCount == 0
+                        ? 'No items selected'
+                        : '$selectedCount selected ${selectedCount == 1 ? 'item' : 'items'}',
+                    style: GoogleFonts.poppins(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w800,
+                      color: AppColors.textPrimary,
                     ),
                   ),
-                  const Icon(Icons.chevron_right_rounded,
-                      color: AppColors.textSecondary),
-                ],
-              ),
+                ),
+                Text(
+                  '\$${total.toStringAsFixed(2)}',
+                  style: GoogleFonts.poppins(
+                    fontSize: 20,
+                    fontWeight: FontWeight.w800,
+                    color: AppColors.textPrimary,
+                  ),
+                ),
+              ],
             ),
-            const SizedBox(height: 18),
-            _summaryRow('Subtotal', subtotal),
             const SizedBox(height: 12),
+            _summaryRow('Subtotal', subtotal),
+            const SizedBox(height: 8),
             _summaryRow('Shipping', shipping),
-            const Padding(
-              padding: EdgeInsets.symmetric(vertical: 16),
-              child: Divider(height: 1),
-            ),
-            _summaryRow('Total amount', total, isBold: true),
-            const SizedBox(height: 24),
+            const SizedBox(height: 16),
             SizedBox(
               width: double.infinity,
               height: 56,
-              child: ElevatedButton(
+              child: ElevatedButton.icon(
                 onPressed: hasSelection
                     ? () {
                         Navigator.push(
@@ -332,15 +547,19 @@ class _CartScreenState extends State<CartScreen> {
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.secondary,
                   foregroundColor: Colors.white,
-                  disabledBackgroundColor: Colors.grey.shade300,
+                  disabledBackgroundColor: const Color(0xFFD9DDE6),
                   elevation: 0,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(28),
                   ),
                 ),
-                child: Text(
-                  'Checkout',
-                  style: GoogleFonts.poppins(fontWeight: FontWeight.w700),
+                icon: const Icon(Icons.lock_outline_rounded, size: 20),
+                label: Text(
+                  'Checkout Securely',
+                  style: GoogleFonts.poppins(
+                    fontWeight: FontWeight.w800,
+                    fontSize: 14,
+                  ),
                 ),
               ),
             ),
@@ -350,22 +569,22 @@ class _CartScreenState extends State<CartScreen> {
     );
   }
 
-  Widget _summaryRow(String label, double value, {bool isBold = false}) {
+  Widget _summaryRow(String label, double value) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Text(
           label,
           style: GoogleFonts.poppins(
-            fontSize: 13,
+            fontSize: 12,
             color: AppColors.textSecondary,
-            fontWeight: isBold ? FontWeight.w700 : FontWeight.w500,
+            fontWeight: FontWeight.w600,
           ),
         ),
         Text(
           '\$${value.toStringAsFixed(2)}',
           style: GoogleFonts.poppins(
-            fontSize: isBold ? 16 : 13,
+            fontSize: 12,
             color: AppColors.textPrimary,
             fontWeight: FontWeight.w800,
           ),
@@ -375,31 +594,117 @@ class _CartScreenState extends State<CartScreen> {
   }
 
   Widget _buildEmptyCart() {
-    return Center(
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(24, 14, 24, 24),
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(
-            Icons.shopping_cart_outlined,
-            size: 80,
-            color: Colors.grey.shade300,
+          _buildHeaderButton(
+            icon: Icons.arrow_back_ios_new_rounded,
+            onTap: () => Navigator.maybePop(context),
           ),
-          const SizedBox(height: 16),
+          const Spacer(),
+          Container(
+            width: 130,
+            height: 130,
+            decoration: BoxDecoration(
+              color: AppColors.secondary.withValues(alpha: 0.08),
+              shape: BoxShape.circle,
+            ),
+            child: const Icon(
+              Icons.shopping_cart_outlined,
+              size: 62,
+              color: AppColors.secondary,
+            ),
+          ),
+          const SizedBox(height: 24),
           Text(
-            'Your Cart is Empty',
+            'Your cart is empty',
             style: GoogleFonts.poppins(
-              fontSize: 20,
+              fontSize: 22,
               fontWeight: FontWeight.w800,
+              color: AppColors.textPrimary,
             ),
           ),
           const SizedBox(height: 8),
           Text(
-            'Add items to get started',
-            style: GoogleFonts.poppins(color: AppColors.textSecondary),
+            'Add products you love and they will appear here for checkout.',
+            textAlign: TextAlign.center,
+            style: GoogleFonts.poppins(
+              color: AppColors.textSecondary,
+              height: 1.6,
+              fontSize: 13,
+            ),
           ),
+          const Spacer(),
         ],
       ),
     );
+  }
+
+  Widget _buildHeaderButton({
+    required IconData icon,
+    required VoidCallback onTap,
+  }) {
+    return Material(
+      color: Colors.white,
+      borderRadius: BorderRadius.circular(16),
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(16),
+        child: SizedBox(
+          width: 46,
+          height: 46,
+          child: Icon(icon, color: AppColors.textPrimary, size: 20),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildCheckBox(bool isSelected) {
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 180),
+      width: 22,
+      height: 22,
+      decoration: BoxDecoration(
+        color: isSelected ? AppColors.secondary : Colors.white,
+        borderRadius: BorderRadius.circular(7),
+        border: Border.all(
+          color: isSelected ? AppColors.secondary : const Color(0xFFD9DDE6),
+          width: 1.4,
+        ),
+      ),
+      child: isSelected
+          ? const Icon(Icons.check_rounded, color: Colors.white, size: 15)
+          : null,
+    );
+  }
+
+  Widget _buildVariantChip(String label) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      decoration: BoxDecoration(
+        color: const Color(0xFFF6F6F8),
+        borderRadius: BorderRadius.circular(999),
+      ),
+      child: Text(
+        label,
+        style: GoogleFonts.poppins(
+          fontSize: 10,
+          color: AppColors.textSecondary,
+          fontWeight: FontWeight.w600,
+        ),
+      ),
+    );
+  }
+
+  void _toggleItem(String key) {
+    setState(() {
+      if (_selectedIds.contains(key)) {
+        _selectedIds.remove(key);
+      } else {
+        _selectedIds.add(key);
+      }
+    });
   }
 
   void _syncSelected(List<CartItem> items) {
